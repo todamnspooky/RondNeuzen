@@ -27,9 +27,28 @@
   </nav>
 
   <main class="math-game">
-    <p class="eyebrow">Tafels 1 t/m 10</p>
-    <h1>Rekenspel</h1>
-    <p class="game-progress" id="game-progress">Som 1 van 10</p>
+    <section class="table-selection" id="table-selection">
+      <p class="eyebrow">Kies een tafel</p>
+      <h1>Rekenspel</h1>
+      <div class="table-options" aria-label="Kies welke tafel je wilt oefenen">
+        <button type="button" data-table="all">Alle tafels oefenen</button>
+        <button type="button" data-table="1">Tafel van 1</button>
+        <button type="button" data-table="2">Tafel van 2</button>
+        <button type="button" data-table="3">Tafel van 3</button>
+        <button type="button" data-table="4">Tafel van 4</button>
+        <button type="button" data-table="5">Tafel van 5</button>
+        <button type="button" data-table="6">Tafel van 6</button>
+        <button type="button" data-table="7">Tafel van 7</button>
+        <button type="button" data-table="8">Tafel van 8</button>
+        <button type="button" data-table="9">Tafel van 9</button>
+        <button type="button" data-table="10">Tafel van 10</button>
+      </div>
+    </section>
+
+    <section class="game-session" id="game-session" hidden>
+      <p class="eyebrow" id="selected-table-label">Tafels 1 t/m 10</p>
+      <h1>Rekenspel</h1>
+      <p class="game-progress" id="game-progress">Som 1 van 10</p>
 
     <section class="math-question">
       <h2 id="question-text"></h2>
@@ -62,12 +81,16 @@
       <li data-answer="10">10 × 1 = 10</li><li data-answer="20">10 × 2 = 20</li><li data-answer="30">10 × 3 = 30</li><li data-answer="40">10 × 4 = 40</li><li data-answer="50">10 × 5 = 50</li><li data-answer="60">10 × 6 = 60</li><li data-answer="70">10 × 7 = 70</li><li data-answer="80">10 × 8 = 80</li><li data-answer="90">10 × 9 = 90</li><li data-answer="100">10 × 10 = 100</li>
     </ul>
 
-    <p class="game-feedback" id="game-feedback" aria-live="polite"></p>
-    <section class="game-result" id="game-result" hidden>
-      <div class="trophy" id="trophy" aria-hidden="true" hidden>🏆</div>
-      <h2 id="result-title">Goed gedaan!</h2>
-      <p id="score"></p>
-      <button type="button" id="restart-game">Nog een keer!</button>
+      <p class="game-feedback" id="game-feedback" aria-live="polite"></p>
+      <section class="game-result" id="game-result" hidden>
+        <div class="trophy" id="trophy" aria-hidden="true" hidden>🏆</div>
+        <h2 id="result-title">Goed gedaan!</h2>
+        <p id="score"></p>
+        <div class="game-actions">
+          <button type="button" id="restart-game">Nog een keer!</button>
+          <button type="button" id="choose-table">Andere tafels!</button>
+        </div>
+      </section>
     </section>
   </main>
 
@@ -83,10 +106,16 @@
     const resultTitle = document.querySelector('#result-title');
     const scoreText = document.querySelector('#score');
     const restartButton = document.querySelector('#restart-game');
+    const chooseTableButton = document.querySelector('#choose-table');
+    const tableSelection = document.querySelector('#table-selection');
+    const gameSession = document.querySelector('#game-session');
+    const selectedTableLabel = document.querySelector('#selected-table-label');
+    const tableButtons = [...document.querySelectorAll('[data-table]')];
     let currentRound = 0;
     let score = 0;
     let currentSum;
     let gameSums = [];
+    let selectedTable = 'all';
 
     function shuffle(items) {
       const shuffled = [...items];
@@ -120,6 +149,34 @@
       feedback.textContent = '';
     }
 
+    function startGame(table) {
+      selectedTable = table;
+      const selectedSums = selectedTable === 'all'
+        ? sums
+        : sums.filter((sum) => Number(sum.textContent.split(' × ')[0]) === Number(selectedTable));
+
+      currentRound = 0;
+      score = 0;
+      gameSums = shuffle(selectedSums).slice(0, 10);
+      selectedTableLabel.textContent = selectedTable === 'all'
+        ? 'Alle tafels'
+        : `Tafel van ${selectedTable}`;
+      answerProgress.forEach((progressItem, index) => {
+        progressItem.textContent = '○';
+        progressItem.className = '';
+        progressItem.setAttribute('aria-label', `Ronde ${index + 1}`);
+      });
+      tableSelection.hidden = true;
+      gameSession.hidden = false;
+      document.querySelector('.math-question').hidden = false;
+      progress.hidden = false;
+      feedback.hidden = false;
+      result.hidden = true;
+      trophy.hidden = true;
+      resultTitle.textContent = 'Goed gedaan!';
+      showQuestion();
+    }
+
     function checkAnswer(event) {
       const isCorrect = event.target.dataset.answer === currentSum.dataset.answer;
       const progressItem = answerProgress[currentRound];
@@ -150,25 +207,17 @@
     }
 
     restartButton.addEventListener('click', () => {
-      currentRound = 0;
-      score = 0;
-      answerProgress.forEach((progressItem, index) => {
-        progressItem.textContent = '○';
-        progressItem.className = '';
-        progressItem.setAttribute('aria-label', `Ronde ${index + 1}`);
-      });
-      document.querySelector('.math-question').hidden = false;
-      progress.hidden = false;
-      feedback.hidden = false;
-      result.hidden = true;
-      gameSums = shuffle(sums).slice(0, 10);
-      trophy.hidden = true;
-      resultTitle.textContent = 'Goed gedaan!';
-      showQuestion();
+      startGame(selectedTable);
     });
 
-    gameSums = shuffle(sums).slice(0, 10);
-    showQuestion();
+    chooseTableButton.addEventListener('click', () => {
+      gameSession.hidden = true;
+      tableSelection.hidden = false;
+    });
+
+    tableButtons.forEach((button) => {
+      button.addEventListener('click', () => startGame(button.dataset.table));
+    });
   </script>
 </body>
 </html>
