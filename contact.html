@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact | Rondneuzen</title>
+  <link rel="icon" href="Data/Favicon/favicon.ico" sizes="any">
+  <link rel="icon" href="Data/Favicon/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="Data/Favicon/apple-touch-icon.png">
+  <link rel="manifest" href="Data/Favicon/site.webmanifest">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <img class="site-logo" src="Data/Logo/RondNeuzen.jpg" alt="Rondneuzen logo">
+  <input type="checkbox" id="menu-toggle" class="menu-toggle">
+  <label for="menu-toggle" class="menu-button" aria-label="Open menu">
+    <span></span>
+    <span></span>
+    <span></span>
+  </label>
+
+  <nav class="menu" aria-label="Hoofdnavigatie">
+    <a href="index.html">Home</a>
+    <a href="spelletjes.html">Spelletjes</a>
+    <a href="over-mij.html">Over mij</a>
+    <a href="contact.html">Contact</a>
+  </nav>
+
+  <main class="contact-page">
+    <h1>Contact</h1>
+
+    <form class="contact-form" action="mailto:mdelgorge@hotmail.com?subject=Contactformulier%20Rondneuzen" method="post">
+      <label for="name">Naam</label>
+      <input type="text" id="name" name="naam" required>
+
+      <label for="email">E-mailadres</label>
+      <input type="email" id="email" name="e-mailadres" required>
+
+      <label for="message">Bericht</label>
+      <textarea id="message" name="bericht" rows="6" required></textarea>
+
+      <button type="submit">Versturen</button>
+    </form>
+  </main>
+
+  <script>
+    document.querySelector('.contact-form').addEventListener('submit', function (event) {
+      event.preventDefault();
+
+      const formData = new FormData(event.target);
+      const body = [
+        `Naam: ${formData.get('naam')}`,
+        `E-mailadres: ${formData.get('e-mailadres')}`,
+        `Bericht: ${formData.get('bericht')}`
+      ].join('\n');
+
+      window.location.href = `mailto:mdelgorge@hotmail.com?subject=Contactformulier%20Rondneuzen&body=${encodeURIComponent(body)}`;
+    });
+  </script>
+</body>
+</html>
