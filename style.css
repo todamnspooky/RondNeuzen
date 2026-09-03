@@ -3,8 +3,7 @@
   --deep-blue: #164354;
   --soft-white: #f8fcfd;
   --accent: #f2b6a0;
-  --secondary-text: #47798a;
-  --tertiary-text: #356878;
+  --secondary-text: #356878;
   --success-color: #176b45;
   --success-light: #ccefdc;
   --error-color: #a23737;
@@ -177,7 +176,7 @@ h1 {
 .intro {
   max-width: 430px;
   margin: 28px 0 0;
-  color: var(--tertiary-text);
+  color: var(--secondary-text);
   font-size: clamp(1rem, 2vw, 1.2rem);
   line-height: 1.6;
 }
@@ -347,8 +346,7 @@ h1 {
 
 .answer-options button:hover,
 .game-result button:hover {
-  background: #245e70;
-  transform: translateY(-2px);
+  transform: translateY(-2px) scale(1.05);
 }
 
 .answer-options button:disabled {
@@ -426,7 +424,7 @@ h1 {
 }
 
 .contact-form button:hover {
-  background: #245e70;
+  transform: translateY(-2px) scale(1.05);
 }
 
 @media (max-width: 600px) {
