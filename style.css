@@ -3,6 +3,12 @@
   --deep-blue: #164354;
   --soft-white: #f8fcfd;
   --accent: #f2b6a0;
+  --secondary-text: #47798a;
+  --tertiary-text: #356878;
+  --success-color: #176b45;
+  --success-light: #ccefdc;
+  --error-color: #a23737;
+  --error-light: #f6d1d1;
 }
 
 * {
@@ -151,7 +157,7 @@ body {
 
 .eyebrow {
   margin: 0 0 12px;
-  color: #47798a;
+  color: var(--secondary-text);
   font-size: 0.78rem;
   font-weight: 700;
   letter-spacing: 0.16em;
@@ -171,7 +177,7 @@ h1 {
 .intro {
   max-width: 430px;
   margin: 28px 0 0;
-  color: #356878;
+  color: var(--tertiary-text);
   font-size: clamp(1rem, 2vw, 1.2rem);
   line-height: 1.6;
 }
@@ -253,7 +259,7 @@ h1 {
 
 .game-progress {
   margin: 0 0 28px;
-  color: #47798a;
+  color: var(--secondary-text);
   font-weight: 700;
 }
 
@@ -307,15 +313,15 @@ h1 {
 }
 
 .answer-progress li.correct {
-  color: #176b45;
-  background: #ccefdc;
-  border-color: #176b45;
+  color: var(--success-color);
+  background: var(--success-light);
+  border-color: var(--success-color);
 }
 
 .answer-progress li.incorrect {
-  color: #a23737;
-  background: #f6d1d1;
-  border-color: #a23737;
+  color: var(--error-color);
+  background: var(--error-light);
+  border-color: var(--error-color);
 }
 
 .answer-options {

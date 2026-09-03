@@ -1,0 +1,85 @@
+================================================================================
+HUISKLEUREN - Rondneuzen Project
+================================================================================
+Alle hex-codes voor design-tools (Figma, Adobe XD, etc.)
+
+
+PRIMAIRE HUISKLEUREN
+====================
+
+Pastel Blauw (Achtergrond)
+  HEX: #CFEAF3
+  RGB: 207, 234, 243
+  Gebruik: Pagina-achtergrond, accenten
+
+Deep Blue (Donker blauw)
+  HEX: #164354
+  RGB: 22, 67, 84
+  Gebruik: Tekst, iconen, borders, buttons
+
+Soft White (Bijna wit)
+  HEX: #F8FCFD
+  RGB: 248, 252, 253
+  Gebruik: Button-achtergrond, containers
+
+Accent (Zalmroze)
+  HEX: #F2B6A0
+  RGB: 242, 182, 160
+  Gebruik: Highlights, speciale accenten
+
+
+SECUNDAIRE KLEUREN (Tekst)
+===========================
+
+Secondary Text (Grijsblauw)
+  HEX: #47798A
+  RGB: 71, 121, 138
+  Gebruik: Eyebrow-tekst, labels
+
+Tertiary Text (Donkerder grijsblauw)
+  HEX: #356878
+  RGB: 53, 104, 120
+  Gebruik: Intro-teksten, secundaire inhoud
+
+
+FEEDBACK KLEUREN
+=================
+
+Success - Tekst (Donkergroen)
+  HEX: #176B45
+  RGB: 23, 107, 69
+  Gebruik: Correct antwoord indicator
+
+Success - Achtergrond (Licht groen)
+  HEX: #CCEFDC
+  RGB: 204, 239, 220
+  Gebruik: Correct antwoord achtergrond
+
+Error - Tekst (Rood)
+  HEX: #A23737
+  RGB: 162, 55, 55
+  Gebruik: Fout antwoord indicator
+
+Error - Achtergrond (Licht rood)
+  HEX: #F6D1D1
+  RGB: 246, 209, 209
+  Gebruik: Fout antwoord achtergrond
+
+
+KOPIEERTIP
+==========
+Kopieëer de HEX-codes direct naar je design-tool. De RGB-waarden zijn voor tools
+die geen HEX accepteren.
+
+QUICK REFERENCE (Kopiëren)
+==========================
+#CFEAF3  Pastel Blue
+#164354  Deep Blue
+#F8FCFD  Soft White
+#F2B6A0  Accent
+#47798A  Secondary Text
+#356878  Tertiary Text
+#176B45  Success (text)
+#CCEFDC  Success (background)
+#A23737  Error (text)
+#F6D1D1  Error (background)
