@@ -47,7 +47,9 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+  padding-bottom: 14px;
   font-size: 2.8rem;
+  line-height: 1;
   color: var(--deep-blue);
   text-decoration: none;
   background: rgba(248, 252, 253, 0.76);
