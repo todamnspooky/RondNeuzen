@@ -511,6 +511,105 @@ h1 {
   font-weight: 700;
 }
 
+.memory-setup {
+  padding-top: 6vh;
+}
+
+.memory-setup h1 {
+  margin-bottom: 32px;
+  font-size: clamp(3rem, 8vw, 5.5rem);
+}
+
+.setup-group {
+  margin-bottom: 28px;
+}
+
+.setup-label {
+  margin: 0 0 12px;
+  color: var(--secondary-text);
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.lives-options {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+.lives-options button {
+  display: grid;
+  justify-items: center;
+  gap: 4px;
+  padding: 14px 12px;
+  color: var(--deep-blue);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  background: rgba(248, 252, 253, 0.9);
+  border: 2px solid var(--deep-blue);
+  border-radius: 8px;
+  transition: background 180ms ease, color 180ms ease, transform 180ms ease;
+}
+
+.lives-options button.selected {
+  color: var(--soft-white);
+  background: var(--deep-blue);
+  transform: translateY(-2px) scale(1.10);
+}
+
+.lives-options button:active {
+  color: var(--soft-white);
+  background: #245e70;
+  transform: translateY(-2px) scale(1.10);
+}
+
+.option-icon {
+  font-size: 1.35rem;
+  line-height: 1.2;
+}
+
+.option-title {
+  font-size: 0.95rem;
+}
+
+.grid-options {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+}
+
+.grid-options button {
+  display: grid;
+  justify-items: center;
+  gap: 4px;
+  padding: 20px 16px;
+  color: var(--soft-white);
+  font: inherit;
+  cursor: pointer;
+  background: var(--deep-blue);
+  border: 0;
+  border-radius: 8px;
+  box-shadow: 0 6px 16px rgba(22, 67, 84, 0.08);
+  transition: background 180ms ease, transform 180ms ease;
+}
+
+.grid-options button:active {
+  background: #245e70;
+  transform: translateY(-2px) scale(1.10);
+}
+
+.grid-count {
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+.grid-size {
+  color: var(--pastel-blue);
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
 .contact-page h1 {
   margin-bottom: 32px;
   font-size: clamp(3rem, 8vw, 5.5rem);
@@ -561,12 +660,15 @@ h1 {
 
 @media (hover: hover) {
   .table-options button:hover,
-  .player-options button:hover {
+  .player-options button:hover,
+  .lives-options button:hover,
+  .grid-options button:hover {
     background: #245e70;
     transform: translateY(-2px) scale(1.10);
   }
 
-  .table-options button:first-child:hover {
+  .table-options button:first-child:hover,
+  .lives-options button:hover {
     color: var(--soft-white);
   }
 
@@ -623,7 +725,8 @@ h1 {
   }
 
   .table-selection,
-  .player-selection {
+  .player-selection,
+  .memory-setup {
     padding-top: 0;
   }
 }

@@ -41,6 +41,87 @@
         </button>
       </div>
     </section>
+
+    <section class="memory-setup" id="memory-setup" hidden>
+      <p class="eyebrow" id="setup-mode-label">1 Speler 😁</p>
+      <h1>Memory</h1>
+
+      <div class="setup-group" id="lives-group">
+        <p class="setup-label">Kies je levens</p>
+        <div class="lives-options" aria-label="Kies het aantal levens">
+          <button type="button" class="selected" data-lives="infinite" aria-pressed="true">
+            <span class="option-icon" aria-hidden="true">♾️</span>
+            <span class="option-title">Oefenen</span>
+          </button>
+          <button type="button" data-lives="4" aria-pressed="false">
+            <span class="option-icon" aria-hidden="true">❤️</span>
+            <span class="option-title">4 levens</span>
+          </button>
+          <button type="button" data-lives="6" aria-pressed="false">
+            <span class="option-icon" aria-hidden="true">❤️❤️</span>
+            <span class="option-title">6 levens</span>
+          </button>
+          <button type="button" data-lives="8" aria-pressed="false">
+            <span class="option-icon" aria-hidden="true">❤️❤️❤️</span>
+            <span class="option-title">8 levens</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="setup-group">
+        <p class="setup-label">Kies het speelveld</p>
+        <div class="grid-options" aria-label="Kies hoeveel kaartjes">
+          <button type="button" data-cards="6">
+            <span class="grid-count">6 kaartjes</span>
+            <span class="grid-size">3 × 2</span>
+          </button>
+          <button type="button" data-cards="12">
+            <span class="grid-count">12 kaartjes</span>
+            <span class="grid-size">4 × 3</span>
+          </button>
+          <button type="button" data-cards="16">
+            <span class="grid-count">16 kaartjes</span>
+            <span class="grid-size">4 × 4</span>
+          </button>
+          <button type="button" data-cards="20">
+            <span class="grid-count">20 kaartjes</span>
+            <span class="grid-size">5 × 4</span>
+          </button>
+        </div>
+      </div>
+    </section>
   </main>
+
+  <script>
+    const playerSelection = document.querySelector('#player-selection');
+    const memorySetup = document.querySelector('#memory-setup');
+    const setupModeLabel = document.querySelector('#setup-mode-label');
+    const livesGroup = document.querySelector('#lives-group');
+    const playerButtons = [...document.querySelectorAll('[data-players]')];
+    const livesButtons = [...document.querySelectorAll('[data-lives]')];
+
+    playerButtons.forEach((button) => {
+      button.addEventListener('click', () => {
+        const players = button.dataset.players;
+        const isSinglePlayer = players === '1';
+
+        setupModeLabel.textContent = isSinglePlayer ? '1 Speler 😁' : '2 Spelers 😎 ⚔️ 😎';
+        livesGroup.hidden = !isSinglePlayer;
+        playerSelection.hidden = true;
+        memorySetup.hidden = false;
+      });
+    });
+
+    livesButtons.forEach((button) => {
+      button.addEventListener('click', () => {
+        livesButtons.forEach((item) => {
+          item.classList.remove('selected');
+          item.setAttribute('aria-pressed', 'false');
+        });
+        button.classList.add('selected');
+        button.setAttribute('aria-pressed', 'true');
+      });
+    });
+  </script>
 </body>
 </html>
