@@ -952,13 +952,21 @@ h1 {
 }
 
 @media (max-width: 600px) {
-  .menu-button {
+  .games-link {
     top: 18px;
     left: 18px;
     width: 56px;
     height: 56px;
-    padding: 15px 13px;
-    gap: 6px;
+    padding-bottom: 12px;
+    font-size: 2.35rem;
+  }
+
+  .menu-button {
+    top: 84px;
+    left: 18px;
+    width: 56px;
+    height: 56px;
+    font-size: 1.55rem;
   }
 
   .site-logo {
@@ -970,12 +978,12 @@ h1 {
   }
 
   .menu-hint {
-    top: 46px;
-    left: 94px;
+    top: 112px;
+    left: 84px;
   }
 
   .menu {
-    top: 86px;
+    top: 150px;
     left: 18px;
   }
 
