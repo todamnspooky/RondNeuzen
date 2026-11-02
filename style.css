@@ -658,10 +658,6 @@ h1 {
   transform: translateY(-2px) scale(1.10);
 }
 
-.animal-bank {
-  display: none;
-}
-
 .memory-session h1 {
   margin-bottom: 12px;
   font-size: clamp(3rem, 8vw, 5.5rem);

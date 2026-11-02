@@ -54,17 +54,17 @@
             <span class="option-icon" aria-hidden="true">♾️</span>
             <span class="option-title">Oefenen</span>
           </button>
-          <button type="button" data-lives="4" aria-pressed="false">
-            <span class="option-icon" aria-hidden="true">❤️</span>
-            <span class="option-title">4 levens</span>
+          <button type="button" data-lives="8" aria-pressed="false">
+            <span class="option-icon" aria-hidden="true">❤️❤️❤️</span>
+            <span class="option-title">8 levens</span>
           </button>
           <button type="button" data-lives="6" aria-pressed="false">
             <span class="option-icon" aria-hidden="true">❤️❤️</span>
             <span class="option-title">6 levens</span>
           </button>
-          <button type="button" data-lives="8" aria-pressed="false">
-            <span class="option-icon" aria-hidden="true">❤️❤️❤️</span>
-            <span class="option-title">8 levens</span>
+          <button type="button" data-lives="4" aria-pressed="false">
+            <span class="option-icon" aria-hidden="true">❤️</span>
+            <span class="option-title">4 levens</span>
           </button>
         </div>
       </div>
@@ -138,32 +138,29 @@
           <button type="button" id="change-setup">Opnieuw kiezen!</button>
         </div>
       </section>
-
-      <ul class="animal-bank" hidden aria-hidden="true">
-        <li data-animal="das" data-label="Das" data-folder="Das" data-images="Das-1.webp,Das-2.webp,Das-3.webp,Das-4.webp,Das-5.webp"></li>
-        <li data-animal="eend" data-label="Eend" data-folder="Eend" data-images="Eend-1.webp,Eend-2.webp,Eend-3.webp,Eend-4.webp,Eend-5.webp"></li>
-        <li data-animal="egel" data-label="Egel" data-folder="Egel" data-images="Egel-1.webp,Egel-2.webp,Egel-3.webp,Egel-4.webp,Egel-5.webp"></li>
-        <li data-animal="kikker" data-label="Kikker" data-folder="Kikker" data-images="Kikker-1.webp,Kikker-2.webp,Kikker-3.webp,Kikker-4.webp,Kikker-5.webp"></li>
-        <li data-animal="konijn" data-label="Konijn" data-folder="Konijn" data-images="Konijn-1.webp,Konijn-2.webp,Konijn-3.webp,Konijn-4.webp,Konijn-5.webp"></li>
-        <li data-animal="lieveheersbeestje" data-label="Lieveheersbeestje" data-folder="Lieveheersbeestje" data-images="Lieveheersbeestje-1.webp,Lieveheersbeestje-2.webp,Lieveheersbeestje-3.webp,Lieveheersbeestje-4.webp,Lieveheersbeestje-5.webp"></li>
-        <li data-animal="muis" data-label="Muis" data-folder="Muis" data-images="Muis-1.webp,Muis-2.webp,Muis-3.webp,Muis-4.webp,Muis-5.webp"></li>
-        <li data-animal="poes" data-label="Poes" data-folder="Poes" data-images="Poes-1.webp,Poes-2.webp,Poes-3.webp,Poes-4.webp,Poes-5.webp"></li>
-        <li data-animal="uil" data-label="Uil" data-folder="Uil" data-images="Uil-1.webp,Uil-2.webp,Uil-3.webp,Uil-4.webp,Uil-5.webp"></li>
-        <li data-animal="vos" data-label="Vos" data-folder="Vos" data-images="Vos-1.webp,Vos-2.webp,Vos-3.webp,Vos-4.webp,Vos-5.webp"></li>
-      </ul>
     </section>
   </main>
 
+  <script src="Data/Games-Data/Plaatjes-Dieren/dieren-data.js"></script>
   <script>
-    const animals = [...document.querySelectorAll('.animal-bank li')].map((item) => ({
-      id: item.dataset.animal,
-      label: item.dataset.label,
-      folder: item.dataset.folder,
-      images: item.dataset.images.split(',')
-    }));
-
-    if (animals.length !== 10 || new Set(animals.map((animal) => animal.id)).size !== 10 || animals.some((animal) => animal.images.length !== 5)) {
-      throw new Error('Ongeldige dierenbank: verwacht exact 10 unieke dieren met elk 5 afbeeldingen.');
+    if (
+      typeof animalBank === 'undefined' ||
+      !Array.isArray(animalBank) ||
+      animalBank.length < 10 ||
+      new Set(animalBank.map((animal) => animal?.id)).size !== animalBank.length ||
+      animalBank.some(
+        (animal) =>
+          typeof animal?.id !== 'string' ||
+          !animal.id.trim() ||
+          typeof animal?.label !== 'string' ||
+          !animal.label.trim() ||
+          !Array.isArray(animal?.images) ||
+          animal.images.length < 1 ||
+          new Set(animal.images).size !== animal.images.length ||
+          animal.images.some((image) => typeof image !== 'string' || !image.trim())
+      )
+    ) {
+      throw new Error('Ongeldige dierenbank: controleer Data/Games-Data/Plaatjes-Dieren/dieren-data.js.');
     }
 
     const playerSelection = document.querySelector('#player-selection');
@@ -223,15 +220,14 @@
     }
 
     function createDeck(pairCount) {
-      const selectedAnimals = shuffle(animals).slice(0, pairCount);
+      const selectedAnimals = shuffle(animalBank).slice(0, pairCount);
       const cardPairs = [];
 
       selectedAnimals.forEach((animal) => {
         const selectedImage = shuffle(animal.images)[0];
-        const imagePath = `Data/Games-Data/Plaatjes-Memory/${animal.folder}/${selectedImage}`;
 
-        cardPairs.push({ id: animal.id, label: animal.label, image: imagePath });
-        cardPairs.push({ id: animal.id, label: animal.label, image: imagePath });
+        cardPairs.push({ id: animal.id, label: animal.label, image: selectedImage });
+        cardPairs.push({ id: animal.id, label: animal.label, image: selectedImage });
       });
 
       return shuffle(cardPairs);
