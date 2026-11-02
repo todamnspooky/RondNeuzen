@@ -14,6 +14,10 @@
   box-sizing: border-box;
 }
 
+[hidden] {
+  display: none !important;
+}
+
 body {
   min-height: 100vh;
   margin: 0;
@@ -573,6 +577,47 @@ h1 {
   font-size: 0.95rem;
 }
 
+.avatar-pickers {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+}
+
+.avatar-options {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+
+.avatar-options button {
+  display: grid;
+  place-items: center;
+  padding: 16px 6px;
+  font: inherit;
+  font-size: 1.85rem;
+  line-height: 1;
+  cursor: pointer;
+  background: rgba(248, 252, 253, 0.9);
+  border: 2px solid var(--deep-blue);
+  border-radius: 8px;
+  transition: background 180ms ease, transform 180ms ease, opacity 180ms ease;
+}
+
+.avatar-options button.selected {
+  background: var(--deep-blue);
+  transform: translateY(-2px) scale(1.10);
+}
+
+.avatar-options button:not(:disabled):active {
+  background: #245e70;
+  transform: translateY(-2px) scale(1.10);
+}
+
+.avatar-options button:disabled {
+  cursor: default;
+  opacity: 0.35;
+}
+
 .grid-options {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -580,12 +625,11 @@ h1 {
 }
 
 .grid-options button {
-  display: grid;
-  justify-items: center;
-  gap: 4px;
   padding: 20px 16px;
   color: var(--soft-white);
   font: inherit;
+  font-size: 1.2rem;
+  font-weight: 700;
   cursor: pointer;
   background: var(--deep-blue);
   border: 0;
@@ -599,15 +643,214 @@ h1 {
   transform: translateY(-2px) scale(1.10);
 }
 
-.grid-count {
-  font-size: 1.2rem;
+.animal-bank {
+  display: none;
+}
+
+.memory-session h1 {
+  margin-bottom: 12px;
+  font-size: clamp(3rem, 8vw, 5.5rem);
+}
+
+.memory-session .game-result {
+  margin-top: 52px;
+}
+
+.solo-status {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-bottom: 18px;
+  padding: 10px 20px;
+  background: rgba(248, 252, 253, 0.85);
+  border: 1px solid rgba(22, 67, 84, 0.16);
+  border-radius: 8px;
+  box-shadow: 0 6px 16px rgba(22, 67, 84, 0.08);
+}
+
+.pairs-progress {
+  color: var(--deep-blue);
   font-weight: 700;
 }
 
-.grid-size {
-  color: var(--pastel-blue);
-  font-size: 0.9rem;
+.lives-display {
+  font-size: 1.25rem;
+  line-height: 1;
+  letter-spacing: 2px;
+}
+
+.scoreboard {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.score-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  color: var(--deep-blue);
   font-weight: 700;
+  background: rgba(248, 252, 253, 0.85);
+  border: 2px solid rgba(22, 67, 84, 0.2);
+  border-radius: 8px;
+  opacity: 0.72;
+  transition: background 180ms ease, color 180ms ease, transform 180ms ease, opacity 180ms ease, border-color 180ms ease;
+}
+
+.score-card.active {
+  color: var(--soft-white);
+  background: var(--deep-blue);
+  border-color: var(--deep-blue);
+  box-shadow: 0 6px 16px rgba(22, 67, 84, 0.14);
+  opacity: 1;
+  transform: translateY(-2px) scale(1.06);
+}
+
+.score-name {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+#player-1-avatar,
+#player-2-avatar {
+  font-size: 1.25rem;
+  line-height: 1;
+}
+
+.score-points {
+  min-width: 28px;
+  padding: 3px 8px;
+  color: var(--deep-blue);
+  font-size: 1.05rem;
+  background: var(--pastel-blue);
+  border-radius: 6px;
+}
+
+.score-card.active .score-points {
+  background: var(--soft-white);
+}
+
+.score-vs {
+  font-size: 1.35rem;
+  line-height: 1;
+}
+
+.memory-board {
+  display: grid;
+  gap: 12px;
+  margin: 0 auto;
+}
+
+.memory-board.cols-3 {
+  grid-template-columns: repeat(3, 1fr);
+  max-width: min(100%, 430px, 66vh);
+}
+
+.memory-board.cols-4.rows-3 {
+  grid-template-columns: repeat(4, 1fr);
+  max-width: min(100%, 480px, 58vh);
+}
+
+.memory-board.cols-4.rows-4 {
+  grid-template-columns: repeat(4, 1fr);
+  max-width: min(100%, 410px, 45vh);
+  gap: 10px;
+}
+
+.memory-board.cols-5 {
+  grid-template-columns: repeat(5, 1fr);
+  max-width: min(100%, 520px, 56vh);
+  gap: 10px;
+}
+
+.memory-card {
+  position: relative;
+  aspect-ratio: 3 / 4;
+  padding: 0;
+  font: inherit;
+  cursor: pointer;
+  background: transparent;
+  border: 0;
+  perspective: 800px;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 180ms ease;
+}
+
+.memory-card:disabled {
+  cursor: default;
+}
+
+.memory-card:not(:disabled):active {
+  transform: translateY(-2px) scale(1.05);
+}
+
+.card-inner {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 360ms ease;
+}
+
+.memory-card.flipped .card-inner,
+.memory-card.matched .card-inner {
+  transform: rotateY(180deg);
+}
+
+.card-face {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: 8px;
+  box-shadow: 0 6px 16px rgba(22, 67, 84, 0.12);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+
+.card-back {
+  color: var(--soft-white);
+  font-size: clamp(1.5rem, 3.5vw, 2.2rem);
+  font-weight: 700;
+  background: var(--deep-blue);
+  border: 2px solid rgba(248, 252, 253, 0.85);
+  transform: rotateY(0deg);
+  transition: background 180ms ease;
+}
+
+.card-front {
+  background: var(--soft-white);
+  border: 3px solid var(--soft-white);
+  transform: rotateY(180deg);
+  transition: border-color 180ms ease, box-shadow 180ms ease;
+}
+
+.card-front img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.memory-card.matched .card-front {
+  border-color: var(--success-color);
+  box-shadow: 0 0 0 3px var(--success-light), 0 6px 16px rgba(22, 67, 84, 0.12);
+}
+
+.memory-card.mismatch .card-front {
+  border-color: var(--error-color);
+  box-shadow: 0 0 0 3px var(--error-light), 0 6px 16px rgba(22, 67, 84, 0.12);
 }
 
 .contact-page h1 {
@@ -662,6 +905,7 @@ h1 {
   .table-options button:hover,
   .player-options button:hover,
   .lives-options button:hover,
+  .avatar-options button:not(:disabled):hover,
   .grid-options button:hover {
     background: #245e70;
     transform: translateY(-2px) scale(1.10);
@@ -676,6 +920,14 @@ h1 {
   .game-result button:hover,
   .contact-form button:hover {
     transform: translateY(-2px) scale(1.10);
+  }
+
+  .memory-card:not(:disabled):hover {
+    transform: translateY(-2px) scale(1.05);
+  }
+
+  .memory-card:not(:disabled):hover .card-back {
+    background: #245e70;
   }
 }
 
@@ -728,5 +980,37 @@ h1 {
   .player-selection,
   .memory-setup {
     padding-top: 0;
+  }
+
+  .lives-options {
+    gap: 8px;
+  }
+
+  .lives-options button {
+    padding: 10px 6px;
+  }
+
+  .avatar-pickers {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+
+  .scoreboard {
+    gap: 8px;
+  }
+
+  .score-card {
+    padding: 8px 12px;
+    font-size: 0.9rem;
+    gap: 8px;
+  }
+
+  .memory-board,
+  .memory-board.cols-3,
+  .memory-board.cols-4.rows-3,
+  .memory-board.cols-4.rows-4,
+  .memory-board.cols-5 {
+    max-width: 100%;
+    gap: 8px;
   }
 }

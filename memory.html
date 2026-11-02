@@ -68,52 +68,467 @@
         </div>
       </div>
 
+      <div class="setup-group" id="avatars-group" hidden>
+        <div class="avatar-pickers">
+          <div class="avatar-picker">
+            <p class="setup-label">Speler 1</p>
+            <div class="avatar-options" data-player-picker="1" aria-label="Kies dier voor Speler 1">
+              <button type="button" class="selected" data-avatar="🐰" aria-label="Konijn" aria-pressed="true">🐰</button>
+              <button type="button" data-avatar="🐱" aria-label="Poes" aria-pressed="false">🐱</button>
+              <button type="button" data-avatar="🐸" aria-label="Kikker" aria-pressed="false">🐸</button>
+              <button type="button" data-avatar="🦊" aria-label="Vos" aria-pressed="false">🦊</button>
+            </div>
+          </div>
+          <div class="avatar-picker">
+            <p class="setup-label">Speler 2</p>
+            <div class="avatar-options" data-player-picker="2" aria-label="Kies dier voor Speler 2">
+              <button type="button" data-avatar="🐰" aria-label="Konijn" aria-pressed="false">🐰</button>
+              <button type="button" data-avatar="🐱" aria-label="Poes" aria-pressed="false">🐱</button>
+              <button type="button" data-avatar="🐸" aria-label="Kikker" aria-pressed="false">🐸</button>
+              <button type="button" class="selected" data-avatar="🦊" aria-label="Vos" aria-pressed="true">🦊</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div class="setup-group">
         <p class="setup-label">Kies het speelveld</p>
         <div class="grid-options" aria-label="Kies hoeveel kaartjes">
-          <button type="button" data-cards="6">
-            <span class="grid-count">6 kaartjes</span>
-            <span class="grid-size">3 × 2</span>
-          </button>
-          <button type="button" data-cards="12">
-            <span class="grid-count">12 kaartjes</span>
-            <span class="grid-size">4 × 3</span>
-          </button>
-          <button type="button" data-cards="16">
-            <span class="grid-count">16 kaartjes</span>
-            <span class="grid-size">4 × 4</span>
-          </button>
-          <button type="button" data-cards="20">
-            <span class="grid-count">20 kaartjes</span>
-            <span class="grid-size">5 × 4</span>
-          </button>
+          <button type="button" data-cards="6">6 kaartjes</button>
+          <button type="button" data-cards="12">12 kaartjes</button>
+          <button type="button" data-cards="16">16 kaartjes</button>
+          <button type="button" data-cards="20">20 kaartjes</button>
         </div>
       </div>
+    </section>
+
+    <section class="memory-session" id="game-session" hidden>
+      <p class="eyebrow" id="session-mode-label">1 Speler</p>
+      <h1>Memory</h1>
+
+      <div class="solo-status" id="solo-status">
+        <span class="pairs-progress" id="pairs-progress">Setjes: 0 van 6</span>
+        <span class="lives-display" id="lives-display" aria-label="Levens">♾️</span>
+      </div>
+
+      <div class="scoreboard" id="versus-scoreboard" hidden>
+        <div class="score-card active" id="player-1-card">
+          <span class="score-name"><span id="player-1-avatar" aria-hidden="true">🐰</span> Speler 1</span>
+          <span class="score-points" id="player-1-score">0</span>
+        </div>
+        <div class="score-vs" aria-hidden="true">⚔️</div>
+        <div class="score-card" id="player-2-card">
+          <span class="score-name"><span id="player-2-avatar" aria-hidden="true">🦊</span> Speler 2</span>
+          <span class="score-points" id="player-2-score">0</span>
+        </div>
+      </div>
+
+      <div class="memory-board" id="memory-board" aria-label="Memory speelveld"></div>
+
+      <p class="game-feedback" id="game-feedback" aria-live="polite"></p>
+
+      <section class="game-result" id="game-result" hidden>
+        <div class="trophy" id="trophy" aria-hidden="true" hidden>🏆</div>
+        <h2 id="result-title">Goed gedaan!</h2>
+        <p id="score"></p>
+        <div class="game-actions">
+          <button type="button" id="restart-game">Nog een keer!</button>
+          <button type="button" id="change-setup">Opnieuw kiezen!</button>
+        </div>
+      </section>
+
+      <ul class="animal-bank" hidden aria-hidden="true">
+        <li data-animal="das" data-label="Das" data-folder="Das" data-images="Das-1.webp,Das-2.webp,Das-3.webp,Das-4.webp,Das-5.webp"></li>
+        <li data-animal="eend" data-label="Eend" data-folder="Eend" data-images="Eend-1.webp,Eend-2.webp,Eend-3.webp,Eend-4.webp,Eend-5.webp"></li>
+        <li data-animal="egel" data-label="Egel" data-folder="Egel" data-images="Egel-1.webp,Egel-2.webp,Egel-3.webp,Egel-4.webp,Egel-5.webp"></li>
+        <li data-animal="kikker" data-label="Kikker" data-folder="Kikker" data-images="Kikker-1.webp,Kikker-2.webp,Kikker-3.webp,Kikker-4.webp,Kikker-5.webp"></li>
+        <li data-animal="konijn" data-label="Konijn" data-folder="Konijn" data-images="Konijn-1.webp,Konijn-2.webp,Konijn-3.webp,Konijn-4.webp,Konijn-5.webp"></li>
+        <li data-animal="lieveheersbeestje" data-label="Lieveheersbeestje" data-folder="Lieveheersbeestje" data-images="Lieveheersbeestje-1.webp,Lieveheersbeestje-2.webp,Lieveheersbeestje-3.webp,Lieveheersbeestje-4.webp,Lieveheersbeestje-5.webp"></li>
+        <li data-animal="muis" data-label="Muis" data-folder="Muis" data-images="Muis-1.webp,Muis-2.webp,Muis-3.webp,Muis-4.webp,Muis-5.webp"></li>
+        <li data-animal="poes" data-label="Poes" data-folder="Poes" data-images="Poes-1.webp,Poes-2.webp,Poes-3.webp,Poes-4.webp,Poes-5.webp"></li>
+        <li data-animal="uil" data-label="Uil" data-folder="Uil" data-images="Uil-1.webp,Uil-2.webp,Uil-3.webp,Uil-4.webp,Uil-5.webp"></li>
+        <li data-animal="vos" data-label="Vos" data-folder="Vos" data-images="Vos-1.webp,Vos-2.webp,Vos-3.webp,Vos-4.webp,Vos-5.webp"></li>
+      </ul>
     </section>
   </main>
 
   <script>
+    const animals = [...document.querySelectorAll('.animal-bank li')].map((item) => ({
+      id: item.dataset.animal,
+      label: item.dataset.label,
+      folder: item.dataset.folder,
+      images: item.dataset.images.split(',')
+    }));
+
+    if (animals.length !== 10 || new Set(animals.map((animal) => animal.id)).size !== 10 || animals.some((animal) => animal.images.length !== 5)) {
+      throw new Error('Ongeldige dierenbank: verwacht exact 10 unieke dieren met elk 5 afbeeldingen.');
+    }
+
     const playerSelection = document.querySelector('#player-selection');
     const memorySetup = document.querySelector('#memory-setup');
+    const gameSession = document.querySelector('#game-session');
     const setupModeLabel = document.querySelector('#setup-mode-label');
+    const sessionModeLabel = document.querySelector('#session-mode-label');
     const livesGroup = document.querySelector('#lives-group');
+    const avatarsGroup = document.querySelector('#avatars-group');
+    const soloStatus = document.querySelector('#solo-status');
+    const pairsProgress = document.querySelector('#pairs-progress');
+    const livesDisplay = document.querySelector('#lives-display');
+    const versusScoreboard = document.querySelector('#versus-scoreboard');
+    const player1Card = document.querySelector('#player-1-card');
+    const player2Card = document.querySelector('#player-2-card');
+    const player1Avatar = document.querySelector('#player-1-avatar');
+    const player2Avatar = document.querySelector('#player-2-avatar');
+    const player1Score = document.querySelector('#player-1-score');
+    const player2Score = document.querySelector('#player-2-score');
+    const memoryBoard = document.querySelector('#memory-board');
+    const feedback = document.querySelector('#game-feedback');
+    const result = document.querySelector('#game-result');
+    const trophy = document.querySelector('#trophy');
+    const resultTitle = document.querySelector('#result-title');
+    const scoreText = document.querySelector('#score');
+    const restartButton = document.querySelector('#restart-game');
+    const changeSetupButton = document.querySelector('#change-setup');
     const playerButtons = [...document.querySelectorAll('[data-players]')];
     const livesButtons = [...document.querySelectorAll('[data-lives]')];
+    const avatarPickers = [...document.querySelectorAll('[data-player-picker]')];
+    const gridButtons = [...document.querySelectorAll('[data-cards]')];
+
+    let selectedPlayers = 1;
+    let selectedLives = 'infinite';
+    let playerAvatars = { 1: '🐰', 2: '🦊' };
+    let selectedCards = 12;
+    let maxLives = Infinity;
+    let remainingLives = Infinity;
+    let totalPairs = 6;
+    let matchedPairs = 0;
+    let currentPlayer = 1;
+    let scores = { 1: 0, 2: 0 };
+    let flippedCards = [];
+    let isBoardLocked = false;
+    let turnTimeoutId = null;
+
+    function shuffle(items) {
+      const shuffled = [...items];
+
+      for (let index = shuffled.length - 1; index > 0; index -= 1) {
+        const randomIndex = Math.floor(Math.random() * (index + 1));
+        [shuffled[index], shuffled[randomIndex]] = [shuffled[randomIndex], shuffled[index]];
+      }
+
+      return shuffled;
+    }
+
+    function createDeck(pairCount) {
+      const selectedAnimals = shuffle(animals).slice(0, pairCount);
+      const cardPairs = [];
+
+      selectedAnimals.forEach((animal) => {
+        const selectedImage = shuffle(animal.images)[0];
+        const imagePath = `Data/Games-Data/Plaatjes-Memory/${animal.folder}/${selectedImage}`;
+
+        cardPairs.push({ id: animal.id, label: animal.label, image: imagePath });
+        cardPairs.push({ id: animal.id, label: animal.label, image: imagePath });
+      });
+
+      return shuffle(cardPairs);
+    }
+
+    function updateLivesDisplay() {
+      if (selectedLives === 'infinite') {
+        livesDisplay.textContent = '♾️';
+        livesDisplay.setAttribute('aria-label', 'Onbeperkt aantal levens');
+        return;
+      }
+
+      const fullHearts = '❤️'.repeat(remainingLives);
+      const emptyHearts = '🤍'.repeat(maxLives - remainingLives);
+      livesDisplay.textContent = fullHearts + emptyHearts;
+      livesDisplay.setAttribute('aria-label', `${remainingLives} van de ${maxLives} levens over`);
+    }
+
+    function updateActivePlayerUI() {
+      player1Card.classList.toggle('active', currentPlayer === 1);
+      player2Card.classList.toggle('active', currentPlayer === 2);
+    }
+
+    function updateAvatarPickersUI() {
+      avatarPickers.forEach((picker) => {
+        const playerNum = Number(picker.dataset.playerPicker);
+        const otherPlayer = playerNum === 1 ? 2 : 1;
+        const buttons = [...picker.querySelectorAll('[data-avatar]')];
+
+        buttons.forEach((button) => {
+          const avatar = button.dataset.avatar;
+          const isSelected = avatar === playerAvatars[playerNum];
+          const isTakenByOther = avatar === playerAvatars[otherPlayer];
+
+          button.classList.toggle('selected', isSelected);
+          button.setAttribute('aria-pressed', String(isSelected));
+          button.disabled = isTakenByOther;
+        });
+      });
+    }
+
+    function getBoardLayoutClass(cardCount) {
+      if (cardCount === 6) return 'cols-3 rows-2';
+      if (cardCount === 12) return 'cols-4 rows-3';
+      if (cardCount === 16) return 'cols-4 rows-4';
+      return 'cols-5 rows-4';
+    }
+
+    function startGame(cardCount) {
+      clearTimeout(turnTimeoutId);
+      selectedCards = cardCount;
+      totalPairs = cardCount / 2;
+      matchedPairs = 0;
+      flippedCards = [];
+      isBoardLocked = false;
+      currentPlayer = 1;
+      scores = { 1: 0, 2: 0 };
+
+      const isSinglePlayer = selectedPlayers === 1;
+      maxLives = selectedLives === 'infinite' ? Infinity : Number(selectedLives);
+      remainingLives = maxLives;
+
+      sessionModeLabel.textContent = isSinglePlayer
+        ? `1 Speler • ${cardCount} kaartjes`
+        : `2 Spelers • ${cardCount} kaartjes`;
+
+      if (isSinglePlayer) {
+        pairsProgress.textContent = `Setjes: 0 van ${totalPairs}`;
+        updateLivesDisplay();
+        soloStatus.hidden = false;
+        versusScoreboard.hidden = true;
+        feedback.textContent = '';
+      } else {
+        player1Avatar.textContent = playerAvatars[1];
+        player2Avatar.textContent = playerAvatars[2];
+        player1Score.textContent = '0';
+        player2Score.textContent = '0';
+        updateActivePlayerUI();
+        soloStatus.hidden = true;
+        versusScoreboard.hidden = false;
+        feedback.textContent = `${playerAvatars[1]} Speler 1 mag beginnen!`;
+      }
+
+      const deck = createDeck(totalPairs);
+      memoryBoard.className = `memory-board ${getBoardLayoutClass(cardCount)}`;
+      memoryBoard.replaceChildren();
+
+      deck.forEach((cardData, index) => {
+        const cardButton = document.createElement('button');
+        cardButton.type = 'button';
+        cardButton.className = 'memory-card';
+        cardButton.dataset.animal = cardData.id;
+        cardButton.dataset.label = cardData.label;
+        cardButton.dataset.index = String(index + 1);
+        cardButton.setAttribute('aria-label', `Kaart ${index + 1}`);
+
+        const cardInner = document.createElement('span');
+        cardInner.className = 'card-inner';
+
+        const cardBack = document.createElement('span');
+        cardBack.className = 'card-face card-back';
+        cardBack.setAttribute('aria-hidden', 'true');
+        cardBack.textContent = '?';
+
+        const cardFront = document.createElement('span');
+        cardFront.className = 'card-face card-front';
+
+        const img = document.createElement('img');
+        img.src = cardData.image;
+        img.alt = cardData.label;
+        img.draggable = false;
+
+        cardFront.append(img);
+        cardInner.append(cardBack, cardFront);
+        cardButton.append(cardInner);
+        cardButton.addEventListener('click', handleCardClick);
+        memoryBoard.append(cardButton);
+      });
+
+      playerSelection.hidden = true;
+      memorySetup.hidden = true;
+      gameSession.hidden = false;
+      memoryBoard.hidden = false;
+      feedback.hidden = false;
+      result.hidden = true;
+      trophy.hidden = true;
+    }
+
+    function showResult(didWin) {
+      memoryBoard.hidden = true;
+      soloStatus.hidden = true;
+      versusScoreboard.hidden = true;
+      feedback.hidden = true;
+
+      if (selectedPlayers === 1) {
+        trophy.hidden = !didWin;
+        resultTitle.textContent = didWin ? 'Gefeliciteerd!' : 'Bijna!';
+
+        if (didWin) {
+          scoreText.textContent = selectedLives === 'infinite'
+            ? `Je hebt alle ${totalPairs} setjes gevonden!`
+            : `Je hebt alle ${totalPairs} setjes gevonden met nog ${remainingLives} ${remainingLives === 1 ? 'leven' : 'levens'} over!`;
+        } else {
+          scoreText.textContent = `Je levens zijn op. Je hebt ${matchedPairs} van de ${totalPairs} setjes gevonden.`;
+        }
+      } else {
+        trophy.hidden = false;
+
+        if (scores[1] > scores[2]) {
+          resultTitle.textContent = `${playerAvatars[1]} wint!`;
+          scoreText.textContent = `Met ${scores[1]}:${scores[2]}`;
+        } else if (scores[2] > scores[1]) {
+          resultTitle.textContent = `${playerAvatars[2]} wint!`;
+          scoreText.textContent = `Met ${scores[2]}:${scores[1]}`;
+        } else {
+          resultTitle.textContent = 'Gelijkspel!';
+          scoreText.textContent = `Met ${scores[1]}:${scores[2]}`;
+        }
+      }
+
+      result.hidden = false;
+    }
+
+    function handleCardClick(event) {
+      const card = event.currentTarget;
+
+      if (isBoardLocked || card.classList.contains('flipped') || card.classList.contains('matched')) {
+        return;
+      }
+
+      card.classList.add('flipped');
+      card.disabled = true;
+      card.setAttribute('aria-label', card.dataset.label);
+      flippedCards.push(card);
+
+      if (flippedCards.length < 2) {
+        return;
+      }
+
+      isBoardLocked = true;
+      const [firstCard, secondCard] = flippedCards;
+      const isMatch = firstCard.dataset.animal === secondCard.dataset.animal;
+
+      if (isMatch) {
+        matchedPairs += 1;
+        firstCard.classList.add('matched');
+        secondCard.classList.add('matched');
+
+        if (selectedPlayers === 1) {
+          pairsProgress.textContent = `Setjes: ${matchedPairs} van ${totalPairs}`;
+          feedback.textContent = 'Goed gedaan!';
+        } else {
+          scores[currentPlayer] += 1;
+          if (currentPlayer === 1) {
+            player1Score.textContent = String(scores[1]);
+          } else {
+            player2Score.textContent = String(scores[2]);
+          }
+          feedback.textContent = matchedPairs < totalPairs
+            ? `Goed zo! ${playerAvatars[currentPlayer]} Speler ${currentPlayer} mag nog een keer!`
+            : 'Alle dieren gevonden!';
+        }
+
+        if (matchedPairs === totalPairs) {
+          turnTimeoutId = setTimeout(() => {
+            flippedCards = [];
+            isBoardLocked = false;
+            showResult(true);
+          }, 1000);
+        } else {
+          turnTimeoutId = setTimeout(() => {
+            flippedCards = [];
+            isBoardLocked = false;
+          }, 450);
+        }
+      } else {
+        firstCard.classList.add('mismatch');
+        secondCard.classList.add('mismatch');
+
+        if (selectedPlayers === 1) {
+          if (selectedLives !== 'infinite') {
+            remainingLives -= 1;
+            updateLivesDisplay();
+          }
+
+          if (remainingLives === 0) {
+            feedback.textContent = 'Oeps, je levens zijn op!';
+            turnTimeoutId = setTimeout(() => {
+              flippedCards = [];
+              isBoardLocked = false;
+              showResult(false);
+            }, 1500);
+            return;
+          }
+
+          feedback.textContent = 'Bijna, probeer het nog eens!';
+          turnTimeoutId = setTimeout(() => {
+            [firstCard, secondCard].forEach((unmatchedCard) => {
+              unmatchedCard.classList.remove('flipped', 'mismatch');
+              unmatchedCard.disabled = false;
+              unmatchedCard.setAttribute('aria-label', `Kaart ${unmatchedCard.dataset.index}`);
+            });
+            flippedCards = [];
+            feedback.textContent = '';
+            isBoardLocked = false;
+          }, 1400);
+        } else {
+          feedback.textContent = 'Jammer, wissel van beurt!';
+          turnTimeoutId = setTimeout(() => {
+            [firstCard, secondCard].forEach((unmatchedCard) => {
+              unmatchedCard.classList.remove('flipped', 'mismatch');
+              unmatchedCard.disabled = false;
+              unmatchedCard.setAttribute('aria-label', `Kaart ${unmatchedCard.dataset.index}`);
+            });
+            flippedCards = [];
+            currentPlayer = currentPlayer === 1 ? 2 : 1;
+            updateActivePlayerUI();
+            feedback.textContent = `${playerAvatars[currentPlayer]} Speler ${currentPlayer} is aan de beurt!`;
+            isBoardLocked = false;
+          }, 1400);
+        }
+      }
+    }
 
     playerButtons.forEach((button) => {
       button.addEventListener('click', () => {
-        const players = button.dataset.players;
-        const isSinglePlayer = players === '1';
+        selectedPlayers = Number(button.dataset.players);
+        const isSinglePlayer = selectedPlayers === 1;
 
         setupModeLabel.textContent = isSinglePlayer ? '1 Speler 😁' : '2 Spelers 😎 ⚔️ 😎';
         livesGroup.hidden = !isSinglePlayer;
+        avatarsGroup.hidden = isSinglePlayer;
+        updateAvatarPickersUI();
         playerSelection.hidden = true;
         memorySetup.hidden = false;
       });
     });
 
+    avatarPickers.forEach((picker) => {
+      const playerNum = Number(picker.dataset.playerPicker);
+      const otherPlayer = playerNum === 1 ? 2 : 1;
+
+      picker.querySelectorAll('[data-avatar]').forEach((button) => {
+        button.addEventListener('click', () => {
+          const chosenAvatar = button.dataset.avatar;
+          if (chosenAvatar === playerAvatars[otherPlayer]) {
+            return;
+          }
+
+          playerAvatars[playerNum] = chosenAvatar;
+          updateAvatarPickersUI();
+        });
+      });
+    });
+
+    updateAvatarPickersUI();
+
     livesButtons.forEach((button) => {
       button.addEventListener('click', () => {
+        selectedLives = button.dataset.lives;
         livesButtons.forEach((item) => {
           item.classList.remove('selected');
           item.setAttribute('aria-pressed', 'false');
@@ -121,6 +536,23 @@
         button.classList.add('selected');
         button.setAttribute('aria-pressed', 'true');
       });
+    });
+
+    gridButtons.forEach((button) => {
+      button.addEventListener('click', () => {
+        startGame(Number(button.dataset.cards));
+      });
+    });
+
+    restartButton.addEventListener('click', () => {
+      startGame(selectedCards);
+    });
+
+    changeSetupButton.addEventListener('click', () => {
+      clearTimeout(turnTimeoutId);
+      gameSession.hidden = true;
+      memorySetup.hidden = true;
+      playerSelection.hidden = false;
     });
   </script>
 </body>
