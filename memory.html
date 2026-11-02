@@ -379,13 +379,13 @@
 
         if (scores[1] > scores[2]) {
           resultTitle.textContent = `${playerAvatars[1]} wint!`;
-          scoreText.textContent = `Met ${scores[1]}:${scores[2]}`;
+          scoreText.textContent = `Met ${scores[1]} : ${scores[2]}`;
         } else if (scores[2] > scores[1]) {
           resultTitle.textContent = `${playerAvatars[2]} wint!`;
-          scoreText.textContent = `Met ${scores[2]}:${scores[1]}`;
+          scoreText.textContent = `Met ${scores[2]} : ${scores[1]}`;
         } else {
           resultTitle.textContent = 'Gelijkspel!';
-          scoreText.textContent = `Met ${scores[1]}:${scores[2]}`;
+          scoreText.textContent = `Met ${scores[1]} : ${scores[2]}`;
         }
       }
 
