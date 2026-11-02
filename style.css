@@ -511,11 +511,6 @@ h1 {
   font-weight: 700;
 }
 
-.player-subtitle {
-  color: var(--pastel-blue);
-  font-size: 0.95rem;
-}
-
 .contact-page h1 {
   margin-bottom: 32px;
   font-size: clamp(3rem, 8vw, 5.5rem);
