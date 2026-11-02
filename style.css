@@ -327,8 +327,21 @@ h1 {
   font-size: clamp(3rem, 8vw, 5.5rem);
 }
 
-.sum-bank {
-  display: none;
+.back-link {
+  margin-top: 24px;
+  padding: 8px 16px;
+  color: var(--secondary-text);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  background: transparent;
+  border: 0;
+  transition: color 180ms ease, transform 180ms ease;
+}
+
+.back-link:active {
+  color: var(--deep-blue);
+  transform: translateY(-2px);
 }
 
 .game-progress {
@@ -914,6 +927,11 @@ h1 {
   .table-options button:first-child:hover,
   .lives-options button:hover {
     color: var(--soft-white);
+  }
+
+  .back-link:hover {
+    color: var(--deep-blue);
+    transform: translateY(-2px);
   }
 
   .answer-options button:hover,
