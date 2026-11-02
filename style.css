@@ -328,6 +328,7 @@ h1 {
 }
 
 .back-link {
+  display: inline-block;
   margin-top: 24px;
   padding: 8px 16px;
   color: var(--secondary-text);
@@ -336,6 +337,7 @@ h1 {
   cursor: pointer;
   background: transparent;
   border: 0;
+  text-decoration: none;
   transition: color 180ms ease, transform 180ms ease;
 }
 

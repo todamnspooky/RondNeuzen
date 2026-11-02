@@ -40,6 +40,7 @@
           <span class="player-title">2 Spelers</span>
         </button>
       </div>
+      <a href="spelletjes.html" class="back-link">Terug</a>
     </section>
 
     <section class="memory-setup" id="memory-setup" hidden>
@@ -100,6 +101,7 @@
           <button type="button" data-cards="20">20 kaartjes</button>
         </div>
       </div>
+      <button type="button" class="back-link" id="back-to-player-selection">Terug</button>
     </section>
 
     <section class="memory-session" id="game-session" hidden>
@@ -189,6 +191,7 @@
     const scoreText = document.querySelector('#score');
     const restartButton = document.querySelector('#restart-game');
     const changeSetupButton = document.querySelector('#change-setup');
+    const backToPlayerSelectionButton = document.querySelector('#back-to-player-selection');
     const playerButtons = [...document.querySelectorAll('[data-players]')];
     const livesButtons = [...document.querySelectorAll('[data-lives]')];
     const avatarPickers = [...document.querySelectorAll('[data-player-picker]')];
@@ -542,6 +545,11 @@
       button.addEventListener('click', () => {
         startGame(Number(button.dataset.cards));
       });
+    });
+
+    backToPlayerSelectionButton.addEventListener('click', () => {
+      memorySetup.hidden = true;
+      playerSelection.hidden = false;
     });
 
     restartButton.addEventListener('click', () => {
