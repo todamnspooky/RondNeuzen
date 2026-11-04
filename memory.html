@@ -141,7 +141,7 @@
     </section>
   </main>
 
-  <script src="Data/Games-Data/Plaatjes-Dieren/dieren-data.js"></script>
+  <script src="Data/Games-Data/Plaatjes-Dieren/Dieren-Data.js"></script>
   <script>
     if (
       typeof animalBank === 'undefined' ||
@@ -160,7 +160,7 @@
           animal.images.some((image) => typeof image !== 'string' || !image.trim())
       )
     ) {
-      throw new Error('Ongeldige dierenbank: controleer Data/Games-Data/Plaatjes-Dieren/dieren-data.js.');
+      throw new Error('Ongeldige dierenbank: controleer Data/Games-Data/Plaatjes-Dieren/Dieren-Data.js.');
     }
 
     const playerSelection = document.querySelector('#player-selection');

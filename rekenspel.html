@@ -82,14 +82,14 @@
     </section>
   </main>
 
-  <script src="Data/Games-Data/Rekenspel/sommen-data.js"></script>
+  <script src="Data/Games-Data/Rekenspel/Sommen-Data.js"></script>
   <script>
     if (
       typeof timesBank === 'undefined' || timesBank.length !== 100 ||
       typeof plusBank === 'undefined' || plusBank.length !== 2500 ||
       typeof minusBank === 'undefined' || minusBank.length !== 4950
     ) {
-      throw new Error('Ongeldige sommenbank: controleer Data/Games-Data/Rekenspel/sommen-data.js.');
+      throw new Error('Ongeldige sommenbank: controleer Data/Games-Data/Rekenspel/Sommen-Data.js.');
     }
 
     const toSumObjects = (bank) => bank.map((text) => ({
