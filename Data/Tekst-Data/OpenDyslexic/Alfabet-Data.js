@@ -92,11 +92,11 @@ const klankenBank = Object.freeze([
   Object.freeze({ teken: 'z', categorie: 'medeklinker', type: 'medeklinker', aantalLetters: 1 }),
 
   // Medeklinkercombinaties (meerdere letters voor één medeklinkerklank)
-  Object.freeze({ teken: 'ch', categorie: 'medeklinker', type: 'medeklinkercombinatie', aantalLetters: 2, aantalKlanken: 1 }),
-  Object.freeze({ teken: 'ng', categorie: 'medeklinker', type: 'medeklinkercombinatie', aantalLetters: 2, aantalKlanken: 1 }),
+  Object.freeze({ teken: 'ch', categorie: 'medeklinker', type: 'medeklinkercombinatie', aantalLetters: 2 }),
+  Object.freeze({ teken: 'ng', categorie: 'medeklinker', type: 'medeklinkercombinatie', aantalLetters: 2 }),
 
   // Gangbare medeklinkerclusters
-  Object.freeze({ teken: 'nk', categorie: 'medeklinker', type: 'medeklinkercluster', aantalLetters: 2, aantalKlanken: 2 }),
+  Object.freeze({ teken: 'nk', categorie: 'medeklinker', type: 'medeklinkercluster', aantalLetters: 2 }),
   Object.freeze({ teken: 'sch', categorie: 'medeklinker', type: 'medeklinkercluster', aantalLetters: 3 }),
-  Object.freeze({ teken: 'cht', categorie: 'medeklinker', type: 'medeklinkercluster', aantalLetters: 3, aantalKlanken: 2 })
+  Object.freeze({ teken: 'cht', categorie: 'medeklinker', type: 'medeklinkercluster', aantalLetters: 3 })
 ]);
