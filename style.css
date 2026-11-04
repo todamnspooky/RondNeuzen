@@ -18,6 +18,11 @@
   display: none !important;
 }
 
+:focus-visible {
+  outline: 4px solid var(--deep-blue);
+  outline-offset: 4px;
+}
+
 body {
   min-height: 100vh;
   margin: 0;
@@ -51,9 +56,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding-bottom: 14px;
-  font-size: 2.8rem;
-  line-height: 1;
+  padding: 0;
   color: var(--deep-blue);
   text-decoration: none;
   background: rgba(248, 252, 253, 0.76);
@@ -61,6 +64,14 @@ body {
   border-radius: 50%;
   box-shadow: 0 8px 24px rgba(22, 67, 84, 0.12);
   transition: background 180ms ease, transform 180ms ease;
+}
+
+.games-link img {
+  width: 44px;
+  height: auto;
+  display: block;
+  pointer-events: none;
+  user-select: none;
 }
 
 .games-link:hover {
@@ -73,6 +84,11 @@ body {
   width: 1px;
   height: 1px;
   opacity: 0;
+}
+
+.menu-toggle:focus-visible + .menu-button {
+  outline: 4px solid var(--deep-blue);
+  outline-offset: 4px;
 }
 
 .menu-button {
@@ -149,9 +165,10 @@ body {
   border-radius: 16px;
   box-shadow: 0 16px 40px rgba(22, 67, 84, 0.14);
   opacity: 0;
+  visibility: hidden;
   pointer-events: none;
   transform: translateY(-8px);
-  transition: opacity 180ms ease, transform 180ms ease;
+  transition: opacity 180ms ease, transform 180ms ease, visibility 180ms ease;
 }
 
 .menu a {
@@ -168,6 +185,7 @@ body {
 
 .menu-toggle:checked ~ .menu {
   opacity: 1;
+  visibility: visible;
   pointer-events: auto;
   transform: translateY(0);
 }
@@ -953,8 +971,10 @@ h1 {
     left: 18px;
     width: 56px;
     height: 56px;
-    padding-bottom: 12px;
-    font-size: 2.35rem;
+  }
+
+  .games-link img {
+    width: 37px;
   }
 
   .menu-button {
