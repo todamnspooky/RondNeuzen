@@ -20,7 +20,7 @@ Deep Blue (Donker blauw)
 Soft White (Bijna wit)
   HEX: #F8FCFD
   RGB: 248, 252, 253
-  Gebruik: Button-achtergrond, containers
+  Gebruik: Containers, button-achtergrond, tekst op donkere achtergrond (Deep Blue)
 
 Accent (Zalmroze)
   HEX: #F2B6A0

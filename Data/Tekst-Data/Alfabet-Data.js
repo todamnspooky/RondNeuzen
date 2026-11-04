@@ -1,7 +1,4 @@
-// ============================================================================
 // PRAKTISCHE LETTER- EN KLANKENBANK - RONDNEUZEN.NL
-// Afgestemd op het Nederlands basisonderwijs (SLO-leerdoelen)
-// ============================================================================
 
 // 1. HET ALFABET (alle 26 losse letters van a t/m z)
 const alfabetBank = Object.freeze([
