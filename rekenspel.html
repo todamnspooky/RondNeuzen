@@ -223,6 +223,7 @@
         answerOptions.append(button);
       });
       progress.textContent = `Som ${currentRound + 1} van 10`;
+      feedback.className = 'game-feedback';
       feedback.textContent = '';
     }
 
@@ -277,6 +278,7 @@
       gameSession.hidden = false;
       mathQuestion.hidden = false;
       progress.hidden = false;
+      feedback.className = 'game-feedback';
       feedback.hidden = false;
       result.hidden = true;
       trophy.hidden = true;
@@ -285,17 +287,25 @@
     }
 
     function checkAnswer(event) {
-      const isCorrect = event.currentTarget.dataset.answer === currentSum.answer;
+      const chosenButton = event.currentTarget;
+      const isCorrect = chosenButton.dataset.answer === currentSum.answer;
       const progressItem = answerProgress[currentRound];
       answerOptions.querySelectorAll('button').forEach((button) => {
         button.disabled = true;
+        if (button.dataset.answer === currentSum.answer) {
+          button.classList.add('correct');
+        } else if (button === chosenButton && !isCorrect) {
+          button.classList.add('incorrect');
+        }
       });
       progressItem.textContent = isCorrect ? '😊' : '😢';
       progressItem.className = isCorrect ? 'correct' : 'incorrect';
       progressItem.setAttribute('aria-label', isCorrect ? `Ronde ${currentRound + 1}: goed` : `Ronde ${currentRound + 1}: fout`);
       feedback.textContent = isCorrect ? 'Goed gedaan!' : `Bijna! Het goede antwoord is ${currentSum.answer}.`;
+      feedback.className = `game-feedback ${isCorrect ? 'correct' : 'incorrect'}`;
       score += isCorrect ? 1 : 0;
 
+      const delay = isCorrect ? 1500 : 2800;
       roundTimeoutId = setTimeout(() => {
         currentRound += 1;
         if (currentRound < 10) {
@@ -310,7 +320,7 @@
           scoreText.textContent = `Je hebt ${score} van de 10 sommen goed.`;
           result.hidden = false;
         }
-      }, 1500);
+      }, delay);
     }
 
     modeButtons.forEach((button) => {
