@@ -32,7 +32,7 @@
       <p class="eyebrow">Kies een categorie</p>
       <h1>Dieren raden</h1>
       <div class="table-options" aria-label="Kies hoe lang de dierennamen mogen zijn">
-        <button type="button" data-category="all">Alle dieren (29 dieren)</button>
+        <button type="button" data-category="all">Alle dieren</button>
         <button type="button" data-category="short">Korte dieren (3 en 4 letters)</button>
         <button type="button" data-category="long">Lange dieren (5 t/m 8 letters)</button>
       </div>
@@ -44,9 +44,9 @@
       <p class="eyebrow" id="difficulty-eyebrow">Kies een niveau</p>
       <h1>Dieren raden</h1>
       <div class="table-options" aria-label="Kies het aantal verborgen letters">
-        <button type="button" data-difficulty="easy">Makkelijk (1 letter ontbreekt)</button>
-        <button type="button" data-difficulty="medium">Gemiddeld (de helft ontbreekt)</button>
-        <button type="button" data-difficulty="hard">Moeilijk (hele woord spellen)</button>
+        <button type="button" data-difficulty="easy" aria-label="Makkelijk: 1 letter ontbreekt">🐱 P _ e s</button>
+        <button type="button" data-difficulty="medium" aria-label="Gemiddeld: de helft ontbreekt">🐱 P _ _ s</button>
+        <button type="button" data-difficulty="hard" aria-label="Moeilijk: het hele woord spellen">🐱 _ _ _ _</button>
       </div>
       <button type="button" class="back-link" id="back-to-categories">Terug</button>
     </section>
@@ -133,13 +133,6 @@
     const restartBtn = document.getElementById('restart-game');
     const chooseCategoryBtn = document.getElementById('choose-category');
     const backToCategoriesBtn = document.getElementById('back-to-categories');
-    const allCategoryBtn = document.querySelector('[data-category="all"]');
-
-    if (allCategoryBtn) {
-      const activeAnimalCount = animalBank.filter((d) => d.id !== 'lieveheersbeestje').length;
-      allCategoryBtn.textContent = `Alle dieren (${activeAnimalCount} dieren)`;
-    }
-
     // Spelstatus
     let selectedCategory = 'all';
     let selectedDifficulty = 'easy';
@@ -300,7 +293,7 @@
 
         if (!slot.locked && slot.current) {
           // Klik op ingevulde letter: zweeft terug naar toetsenbord!
-          btn.addEventListener('click', () => removeLetterFromSlot(index));
+          btn.addEventListener('click', () => removeLetterFromSlot(index, btn));
         }
 
         wordSlots.append(btn);
@@ -322,7 +315,7 @@
         btn.setAttribute('aria-label', `Letter ${key.char}`);
 
         if (!key.used) {
-          btn.addEventListener('click', () => addLetterToNextSlot(key));
+          btn.addEventListener('click', () => addLetterToNextSlot(key, btn));
         }
 
         letterKeyboard.append(btn);
@@ -330,15 +323,109 @@
     }
 
     // -------------------------------------------------------------------------
+    // Zweef-animatie helper (toets naar vakje en terug)
+    // -------------------------------------------------------------------------
+    function animateLetterFly(char, startRect, endRect, targetIndex, direction) {
+      const targetEl = direction === 'forward'
+        ? wordSlots.children[targetIndex]
+        : letterKeyboard.children[targetIndex];
+
+      if (targetEl) {
+        targetEl.classList.add('incoming');
+      }
+
+      const flyEl = document.createElement('div');
+      flyEl.className = 'flying-letter';
+      flyEl.textContent = char;
+      flyEl.style.left = `${startRect.left}px`;
+      flyEl.style.top = `${startRect.top}px`;
+      flyEl.style.width = `${startRect.width}px`;
+      flyEl.style.height = `${startRect.height}px`;
+
+      document.body.appendChild(flyEl);
+
+      const startCenterX = startRect.left + startRect.width / 2;
+      const startCenterY = startRect.top + startRect.height / 2;
+      const endCenterX = endRect.left + endRect.width / 2;
+      const endCenterY = endRect.top + endRect.height / 2;
+
+      const deltaX = endCenterX - startCenterX;
+      const deltaY = endCenterY - startCenterY;
+      const scaleX = endRect.width / (startRect.width || 1);
+      const scaleY = endRect.height / (startRect.height || 1);
+      const arcY = direction === 'forward' ? -18 : -14;
+
+      const targetShadow = direction === 'forward'
+        ? '0 4px 10px rgba(22, 67, 84, 0.12)'
+        : '0 4px 10px rgba(22, 67, 84, 0.08)';
+
+      const animation = flyEl.animate([
+        {
+          transform: 'translate(0px, 0px) scale(1)',
+          boxShadow: '0 4px 10px rgba(22, 67, 84, 0.12)'
+        },
+        {
+          offset: 0.45,
+          transform: `translate(${deltaX * 0.45}px, ${deltaY * 0.45 + arcY}px) scale(1.06)`,
+          boxShadow: '0 10px 24px rgba(22, 67, 84, 0.22)'
+        },
+        {
+          transform: `translate(${deltaX}px, ${deltaY}px) scale(${scaleX}, ${scaleY})`,
+          boxShadow: targetShadow
+        }
+      ], {
+        duration: 220,
+        easing: 'cubic-bezier(0.25, 1, 0.5, 1)'
+      });
+
+      const onComplete = () => {
+        flyEl.remove();
+        const finalTarget = direction === 'forward'
+          ? wordSlots.children[targetIndex]
+          : letterKeyboard.children[targetIndex];
+        if (finalTarget) {
+          finalTarget.classList.remove('incoming');
+          finalTarget.classList.remove('pop');
+          void finalTarget.offsetWidth;
+          finalTarget.classList.add('pop');
+          setTimeout(() => finalTarget.classList.remove('pop'), 200);
+        }
+      };
+
+      animation.onfinish = onComplete;
+      animation.oncancel = onComplete;
+    }
+
+    // -------------------------------------------------------------------------
     // Interactie: Letter plaatsen
     // -------------------------------------------------------------------------
-    function addLetterToNextSlot(key) {
+    function addLetterToNextSlot(key, sourceEl) {
       if (isTransitioning) return;
 
       // Zoek het eerste lege, niet-gelockte slot
-      const emptySlot = slotStates.find((s) => !s.locked && !s.current);
-      if (!emptySlot) return;
+      const emptySlotIndex = slotStates.findIndex((s) => !s.locked && !s.current);
+      if (emptySlotIndex === -1) return;
 
+      // Meet coördinaten VÓÓRDAT de DOM opnieuw getekend wordt!
+      let startRect = null;
+      let endRect = null;
+      const targetSlotEl = wordSlots.children[emptySlotIndex];
+      const canAnimate = sourceEl && targetSlotEl &&
+        typeof sourceEl.getBoundingClientRect === 'function' &&
+        typeof targetSlotEl.getBoundingClientRect === 'function' &&
+        typeof sourceEl.animate === 'function' &&
+        (!window.matchMedia || !window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+
+      if (canAnimate) {
+        const sRect = sourceEl.getBoundingClientRect();
+        const tRect = targetSlotEl.getBoundingClientRect();
+        if (sRect.width > 0 && sRect.height > 0 && tRect.width > 0 && tRect.height > 0) {
+          startRect = sRect;
+          endRect = tRect;
+        }
+      }
+
+      const emptySlot = slotStates[emptySlotIndex];
       emptySlot.current = key.char;
       emptySlot.keyId = key.id;
       key.used = true;
@@ -346,19 +433,45 @@
       renderSlots();
       renderKeyboard();
       updateCheckButton();
+
+      if (startRect && endRect) {
+        animateLetterFly(key.char, startRect, endRect, emptySlotIndex, 'forward');
+      }
     }
 
     // -------------------------------------------------------------------------
     // Interactie: Letter terugnemen
     // -------------------------------------------------------------------------
-    function removeLetterFromSlot(slotIndex) {
+    function removeLetterFromSlot(slotIndex, sourceEl) {
       if (isTransitioning) return;
 
       const slot = slotStates[slotIndex];
       if (slot.locked || !slot.current) return;
 
+      const keyId = slot.keyId;
+      const char = slot.current;
+      const targetKeyEl = letterKeyboard.children[keyId];
+
+      // Meet coördinaten VÓÓRDAT de DOM opnieuw getekend wordt!
+      let startRect = null;
+      let endRect = null;
+      const canAnimate = sourceEl && targetKeyEl &&
+        typeof sourceEl.getBoundingClientRect === 'function' &&
+        typeof targetKeyEl.getBoundingClientRect === 'function' &&
+        typeof sourceEl.animate === 'function' &&
+        (!window.matchMedia || !window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+
+      if (canAnimate) {
+        const sRect = sourceEl.getBoundingClientRect();
+        const tRect = targetKeyEl.getBoundingClientRect();
+        if (sRect.width > 0 && sRect.height > 0 && tRect.width > 0 && tRect.height > 0) {
+          startRect = sRect;
+          endRect = tRect;
+        }
+      }
+
       // Maak toets weer actief
-      const key = keyboardLetters.find((k) => k.id === slot.keyId);
+      const key = keyboardLetters.find((k) => k.id === keyId);
       if (key) {
         key.used = false;
       }
@@ -369,6 +482,10 @@
       renderSlots();
       renderKeyboard();
       updateCheckButton();
+
+      if (startRect && endRect) {
+        animateLetterFly(char, startRect, endRect, keyId, 'backward');
+      }
     }
 
     function updateCheckButton() {
@@ -423,15 +540,54 @@
         wordRow.classList.add('shake');
         setTimeout(() => wordRow.classList.remove('shake'), 400);
 
+        // Markeer elk vakje:
+        // - Zelf ingevuld & goed: GROEN (.correct-slot)
+        // - Zelf ingevuld & fout: ROOD (.wrong-slot)
+        // - Gegeven (locked): blijft neutraal/locked
+        slotStates.forEach((s, idx) => {
+          const slotEl = wordSlots.children[idx];
+          if (!slotEl) return;
+          if (!s.locked) {
+            if (s.current === s.expected) {
+              slotEl.classList.add('correct-slot');
+            } else {
+              slotEl.classList.add('wrong-slot');
+            }
+          }
+        });
+
         progressItem.textContent = '😢';
         progressItem.className = 'incorrect';
         progressItem.setAttribute('aria-label', `Ronde ${currentRound + 1}: fout`);
-        feedback.textContent = `Helaas! Het juiste woord was ${targetWord}.`;
+
         feedback.className = 'game-feedback incorrect';
+        feedback.replaceChildren();
+
+        const prefix = document.createElement('span');
+        prefix.textContent = 'Helaas! Het juiste woord was ';
+        feedback.append(prefix);
+
+        const wordContainer = document.createElement('span');
+        wordContainer.className = 'feedback-target-word';
+
+        slotStates.forEach((s) => {
+          const letterSpan = document.createElement('span');
+          letterSpan.textContent = s.expected;
+          if (!s.locked && s.current !== s.expected) {
+            letterSpan.className = 'correct-letter-badge';
+          }
+          wordContainer.append(letterSpan);
+        });
+
+        feedback.append(wordContainer);
+
+        const suffix = document.createElement('span');
+        suffix.textContent = '.';
+        feedback.append(suffix);
 
         roundTimeoutId = setTimeout(() => {
           advanceRound();
-        }, 2400);
+        }, 2500);
       }
     });
 

@@ -389,6 +389,12 @@ h1 {
   color: var(--soft-white);
 }
 
+#difficulty-selection .table-options button {
+  font-size: clamp(1.2rem, 3.5vw, 1.45rem);
+  letter-spacing: 0.06em;
+  min-height: 58px;
+}
+
 .math-game h1 {
   margin-bottom: 12px;
   font-size: clamp(3rem, 8vw, 5.5rem);
@@ -553,6 +559,29 @@ h1 {
   color: var(--error-color);
 }
 
+.game-feedback.incorrect .feedback-target-word {
+  color: var(--deep-blue);
+  font-weight: 800;
+  letter-spacing: 0.04em;
+}
+
+.game-feedback.incorrect .correct-letter-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  margin: 0 2px;
+  vertical-align: 0;
+  line-height: 1;
+  color: var(--success-color);
+  background: var(--success-light);
+  border: 2px solid var(--success-color);
+  border-radius: 50%;
+  font-weight: 800;
+  box-shadow: 0 2px 6px rgba(23, 107, 69, 0.18);
+}
+
 .game-result {
   padding: 28px 24px;
   background: rgba(248, 252, 253, 0.8);
@@ -671,6 +700,20 @@ h1 {
   transform: scale(1.08);
 }
 
+.letter-slot.correct-slot {
+  color: var(--soft-white);
+  background: var(--success-color);
+  border-color: var(--success-color);
+  box-shadow: 0 0 0 2px var(--success-light), 0 4px 10px rgba(23, 107, 69, 0.2);
+}
+
+.letter-slot.wrong-slot {
+  color: var(--soft-white);
+  background: var(--error-color);
+  border-color: var(--error-color);
+  box-shadow: 0 0 0 2px var(--error-light), 0 4px 10px rgba(162, 55, 55, 0.2);
+}
+
 .check-button {
   display: grid;
   width: 54px;
@@ -743,6 +786,48 @@ h1 {
 
 .word-row.shake {
   animation: shake 300ms ease;
+}
+
+.flying-letter {
+  position: fixed;
+  z-index: 1000;
+  box-sizing: border-box;
+  margin: 0;
+  display: grid;
+  place-items: center;
+  font-family: 'OpenDyslexic', Arial, sans-serif;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--deep-blue);
+  pointer-events: none;
+  background: var(--soft-white);
+  border: 2px solid var(--deep-blue);
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(22, 67, 84, 0.12);
+  will-change: transform, box-shadow;
+  transform-origin: 50% 50%;
+}
+
+.letter-slot.incoming,
+.letter-key.incoming {
+  color: transparent !important;
+}
+
+@keyframes letterPop {
+  0% {
+    transform: scale(0.92);
+  }
+  50% {
+    transform: scale(1.12);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.letter-slot.pop,
+.letter-key.pop {
+  animation: letterPop 190ms cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 .player-options {
