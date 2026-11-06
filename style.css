@@ -338,19 +338,12 @@ h1 {
 }
 
 .table-selection h1,
-.player-selection h1 {
-  margin-bottom: 36px;
-  font-size: clamp(3rem, 8vw, 5.5rem);
-}
-
-.animal-game h1 {
-  font-size: clamp(2rem, 5vw, 3.2rem);
+.player-selection h1,
+.animal-selection h1,
+.memory-setup h1 {
+  font-size: clamp(2.4rem, 6vw, 4rem);
   line-height: 1.15;
   margin-bottom: 24px;
-}
-
-.animal-selection h1 {
-  font-size: clamp(2.4rem, 6vw, 4rem);
 }
 
 .table-options {
@@ -392,11 +385,6 @@ h1 {
   font-size: clamp(1.2rem, 3.5vw, 1.45rem);
   letter-spacing: 0.06em;
   min-height: 58px;
-}
-
-.math-game h1 {
-  margin-bottom: 12px;
-  font-size: clamp(3rem, 8vw, 5.5rem);
 }
 
 .back-link {
