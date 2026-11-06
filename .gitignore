@@ -1,6 +1,7 @@
 # Lokale test- en auditomgeving
 website test/
 nieuwe_fotoselectie/
+Data/NIEUWE DIEREN/
 download_photos.py
 process_crops.py
 fetch_and_crop.py
