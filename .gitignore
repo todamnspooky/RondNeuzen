@@ -1,3 +1,8 @@
 # Lokale test- en auditomgeving
 website test/
-
+nieuwe_fotoselectie/
+download_photos.py
+process_crops.py
+fetch_and_crop.py
+finish_selection.py
+__pycache__/
