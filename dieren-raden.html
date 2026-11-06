@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dieren raden | Rondneuzen</title>
+  <link rel="icon" href="Data/Favicon/favicon.ico" sizes="any">
+  <link rel="icon" href="Data/Favicon/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="Data/Favicon/apple-touch-icon.png">
+  <link rel="manifest" href="Data/Favicon/site.webmanifest">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <img class="site-logo" src="Data/Logo/RondNeuzen.jpg" alt="Rondneuzen logo">
+  <a href="spelletjes.html" class="games-link" aria-label="Naar spelletjes"><img src="Data/Logo/Controller.webp" alt=""></a>
+  <input type="checkbox" id="menu-toggle" class="menu-toggle">
+  <label for="menu-toggle" class="menu-button" aria-label="Open menu">
+    <span></span>
+    <span></span>
+    <span></span>
+  </label>
+
+  <nav class="menu" aria-label="Hoofdnavigatie">
+    <a href="index.html">Home</a>
+    <a href="over-mij.html">Over mij</a>
+    <a href="contact.html">Contact</a>
+  </nav>
+
+  <main class="animal-game">
+    <!-- Keuzescherm 1: Woordlengte (Kort / Lang / Alles) -->
+    <section class="animal-selection" id="category-selection">
+      <p class="eyebrow">Kies een categorie</p>
+      <h1>Dieren raden</h1>
+      <div class="table-options" aria-label="Kies hoe lang de dierennamen mogen zijn">
+        <button type="button" data-category="all">Alle dieren (29 dieren)</button>
+        <button type="button" data-category="short">Korte dieren (3 en 4 letters)</button>
+        <button type="button" data-category="long">Lange dieren (5 t/m 8 letters)</button>
+      </div>
+      <a href="spelletjes.html" class="back-link">Terug</a>
+    </section>
+
+    <!-- Keuzescherm 2: Moeilijkheidsgraad (Letters verbergen) -->
+    <section class="animal-selection" id="difficulty-selection" hidden>
+      <p class="eyebrow" id="difficulty-eyebrow">Kies een niveau</p>
+      <h1>Dieren raden</h1>
+      <div class="table-options" aria-label="Kies het aantal verborgen letters">
+        <button type="button" data-difficulty="easy">Makkelijk (1 letter ontbreekt)</button>
+        <button type="button" data-difficulty="medium">Gemiddeld (de helft ontbreekt)</button>
+        <button type="button" data-difficulty="hard">Moeilijk (hele woord spellen)</button>
+      </div>
+      <button type="button" class="back-link" id="back-to-categories">Terug</button>
+    </section>
+
+    <!-- Speelveld -->
+    <section class="game-session" id="game-session" hidden>
+      <div class="animal-photo-card" id="animal-photo-card">
+        <img id="animal-photo" src="" alt="Te raden dier">
+      </div>
+
+      <div class="word-row" id="word-row">
+        <div class="word-slots" id="word-slots"></div>
+        <button type="button" class="check-button" id="check-btn" aria-label="Controleer woord" disabled>➔</button>
+      </div>
+
+      <div class="letter-keyboard" id="letter-keyboard" aria-label="Kies een letter"></div>
+
+      <ol class="answer-progress" id="answer-progress" aria-label="Voortgang van de antwoorden">
+        <li aria-label="Ronde 1">○</li>
+        <li aria-label="Ronde 2">○</li>
+        <li aria-label="Ronde 3">○</li>
+        <li aria-label="Ronde 4">○</li>
+        <li aria-label="Ronde 5">○</li>
+        <li aria-label="Ronde 6">○</li>
+        <li aria-label="Ronde 7">○</li>
+        <li aria-label="Ronde 8">○</li>
+        <li aria-label="Ronde 9">○</li>
+        <li aria-label="Ronde 10">○</li>
+      </ol>
+
+      <p class="game-feedback" id="game-feedback" aria-live="polite"></p>
+
+      <section class="game-result" id="game-result" hidden>
+        <div class="trophy" id="trophy" aria-hidden="true" hidden>🏆</div>
+        <h2 id="result-title">Goed gedaan!</h2>
+        <p id="score-text"></p>
+        <div class="game-actions">
+          <button type="button" id="restart-game">Nog een keer!</button>
+          <button type="button" id="choose-category">Opnieuw kiezen!</button>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <script src="Data/Games-Data/Plaatjes-Dieren/Dieren-Data.js"></script>
+  <script>
+    // -------------------------------------------------------------------------
+    // Fisher-Yates Shuffle Engine
+    // -------------------------------------------------------------------------
+    function shuffle(array) {
+      const copy = [...array];
+      for (let i = copy.length - 1; i > 0; i -= 1) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [copy[i], copy[j]] = [copy[j], copy[i]];
+      }
+      return copy;
+    }
+
+    // Hardcoded maskeertabel: hoeveel letters worden leeg gelaten per lengte
+    const MASK_COUNTS = {
+      easy:   { 3: 1, 4: 1, 5: 1, 6: 1, 7: 1, 8: 1 },
+      medium: { 3: 2, 4: 2, 5: 3, 6: 3, 7: 4, 8: 4 },
+      hard:   { 3: 3, 4: 4, 5: 5, 6: 6, 7: 7, 8: 8 }
+    };
+
+    const ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
+    // Elementen
+    const categorySelection = document.getElementById('category-selection');
+    const difficultySelection = document.getElementById('difficulty-selection');
+    const gameSession = document.getElementById('game-session');
+    const animalPhotoCard = document.getElementById('animal-photo-card');
+    const animalPhoto = document.getElementById('animal-photo');
+    const wordRow = document.getElementById('word-row');
+    const wordSlots = document.getElementById('word-slots');
+    const checkBtn = document.getElementById('check-btn');
+    const letterKeyboard = document.getElementById('letter-keyboard');
+    const answerProgress = [...document.querySelectorAll('#answer-progress li')];
+    const feedback = document.getElementById('game-feedback');
+    const gameResult = document.getElementById('game-result');
+    const trophy = document.getElementById('trophy');
+    const resultTitle = document.getElementById('result-title');
+    const scoreText = document.getElementById('score-text');
+    const restartBtn = document.getElementById('restart-game');
+    const chooseCategoryBtn = document.getElementById('choose-category');
+    const backToCategoriesBtn = document.getElementById('back-to-categories');
+    const allCategoryBtn = document.querySelector('[data-category="all"]');
+
+    if (allCategoryBtn) {
+      const activeAnimalCount = animalBank.filter((d) => d.id !== 'lieveheersbeestje').length;
+      allCategoryBtn.textContent = `Alle dieren (${activeAnimalCount} dieren)`;
+    }
+
+    // Spelstatus
+    let selectedCategory = 'all';
+    let selectedDifficulty = 'easy';
+    let gameAnimals = [];
+    let currentRound = 0;
+    let score = 0;
+    let roundTimeoutId = null;
+    let isTransitioning = false;
+
+    // Huidige ronde state
+    let targetWord = '';
+    let slotStates = []; // { letter: 'A', locked: bool, userKeyId: null }
+    let keyboardLetters = []; // { id: 0..11, char: 'A', used: bool }
+
+    // -------------------------------------------------------------------------
+    // Categorie- en Moeilijkheidskeuze
+    // -------------------------------------------------------------------------
+    document.querySelectorAll('[data-category]').forEach((button) => {
+      button.addEventListener('click', () => {
+        selectedCategory = button.dataset.category;
+        categorySelection.hidden = true;
+        difficultySelection.hidden = false;
+      });
+    });
+
+    backToCategoriesBtn.addEventListener('click', () => {
+      difficultySelection.hidden = true;
+      categorySelection.hidden = false;
+    });
+
+    document.querySelectorAll('[data-difficulty]').forEach((button) => {
+      button.addEventListener('click', () => {
+        selectedDifficulty = button.dataset.difficulty;
+        startGame();
+      });
+    });
+
+    restartBtn.addEventListener('click', () => startGame());
+    chooseCategoryBtn.addEventListener('click', () => {
+      clearTimeout(roundTimeoutId);
+      roundTimeoutId = null;
+      isTransitioning = false;
+      gameSession.hidden = true;
+      difficultySelection.hidden = true;
+      categorySelection.hidden = false;
+    });
+
+    // -------------------------------------------------------------------------
+    // Spel Starten
+    // -------------------------------------------------------------------------
+    function startGame() {
+      clearTimeout(roundTimeoutId);
+      roundTimeoutId = null;
+      isTransitioning = false;
+      currentRound = 0;
+      score = 0;
+
+      // 1. Filter pool (lieveheersbeestje weglaten wegens 17 letters)
+      let pool = animalBank.filter((d) => d.id !== 'lieveheersbeestje');
+      if (selectedCategory === 'short') {
+        pool = pool.filter((d) => d.label.length <= 4);
+      } else if (selectedCategory === 'long') {
+        pool = pool.filter((d) => d.label.length >= 5);
+      }
+
+      // 2. Fisher-Yates shuffle over pool en pak de eerste 10
+      gameAnimals = shuffle(pool).slice(0, 10);
+
+      // Reset bolletjes
+      answerProgress.forEach((item, index) => {
+        item.textContent = '○';
+        item.className = '';
+        item.setAttribute('aria-label', `Ronde ${index + 1}`);
+      });
+
+      categorySelection.hidden = true;
+      difficultySelection.hidden = true;
+      gameSession.hidden = false;
+      animalPhotoCard.hidden = false;
+      wordRow.hidden = false;
+      letterKeyboard.hidden = false;
+      feedback.hidden = false;
+      gameResult.hidden = true;
+      trophy.hidden = true;
+
+      showRound();
+    }
+
+    // -------------------------------------------------------------------------
+    // Ronde Tonen
+    // -------------------------------------------------------------------------
+    function showRound() {
+      isTransitioning = false;
+      clearTimeout(roundTimeoutId);
+      roundTimeoutId = null;
+      animalPhotoCard.classList.remove('matched', 'mismatch');
+      const animal = gameAnimals[currentRound];
+
+      // Fisher-Yates op de 5 foto's van dit dier: pak de eerste!
+      const chosenPhoto = shuffle(animal.images)[0];
+      animalPhoto.src = chosenPhoto;
+      animalPhoto.alt = `Foto van een ${animal.label.toLowerCase()}`;
+
+      // Dynamisch het woord halen uit de databank
+      targetWord = animal.label.toUpperCase();
+      const wordLen = targetWord.length;
+
+      // Bepaal hoeveel letters verborgen worden
+      const maskCount = Math.min(MASK_COUNTS[selectedDifficulty][wordLen] || 1, wordLen);
+
+      // Kies willekeurige indices die leeg moeten zijn via Fisher-Yates
+      const allIndices = shuffle([...Array(wordLen).keys()]);
+      const hiddenIndices = new Set(allIndices.slice(0, maskCount));
+
+      // Bouw slot states
+      slotStates = [];
+      const missingChars = [];
+
+      for (let i = 0; i < wordLen; i += 1) {
+        const char = targetWord[i];
+        if (hiddenIndices.has(i)) {
+          slotStates.push({ expected: char, current: '', locked: false, keyId: null });
+          missingChars.push(char);
+        } else {
+          slotStates.push({ expected: char, current: char, locked: true, keyId: null });
+        }
+      }
+
+      // Vul aan tot 12 letters met fopletters
+      const neededFakes = 12 - missingChars.length;
+      const fakePool = shuffle(ALPHABET.split('').filter((c) => !missingChars.includes(c)));
+      const raw12 = [...missingChars, ...fakePool.slice(0, neededFakes)];
+
+      // Fisher-Yates op het 12-letter bord
+      const shuffled12 = shuffle(raw12);
+      keyboardLetters = shuffled12.map((char, index) => ({ id: index, char, used: false }));
+
+      renderSlots();
+      renderKeyboard();
+      updateCheckButton();
+
+      feedback.textContent = '';
+      feedback.className = 'game-feedback';
+    }
+
+    // -------------------------------------------------------------------------
+    // Render Woordvakjes
+    // -------------------------------------------------------------------------
+    function renderSlots() {
+      wordSlots.replaceChildren();
+
+      slotStates.forEach((slot, index) => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = `letter-slot ${slot.locked ? 'locked' : ''} ${slot.current ? 'filled' : ''}`;
+        btn.textContent = slot.current || '';
+        btn.setAttribute('aria-label', slot.current ? `Letter ${slot.current}` : `Leeg vakje ${index + 1}`);
+
+        if (!slot.locked && slot.current) {
+          // Klik op ingevulde letter: zweeft terug naar toetsenbord!
+          btn.addEventListener('click', () => removeLetterFromSlot(index));
+        }
+
+        wordSlots.append(btn);
+      });
+    }
+
+    // -------------------------------------------------------------------------
+    // Render 6x2 Toetsenbord
+    // -------------------------------------------------------------------------
+    function renderKeyboard() {
+      letterKeyboard.replaceChildren();
+
+      keyboardLetters.forEach((key) => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'letter-key';
+        btn.textContent = key.char;
+        btn.disabled = key.used;
+        btn.setAttribute('aria-label', `Letter ${key.char}`);
+
+        if (!key.used) {
+          btn.addEventListener('click', () => addLetterToNextSlot(key));
+        }
+
+        letterKeyboard.append(btn);
+      });
+    }
+
+    // -------------------------------------------------------------------------
+    // Interactie: Letter plaatsen
+    // -------------------------------------------------------------------------
+    function addLetterToNextSlot(key) {
+      if (isTransitioning) return;
+
+      // Zoek het eerste lege, niet-gelockte slot
+      const emptySlot = slotStates.find((s) => !s.locked && !s.current);
+      if (!emptySlot) return;
+
+      emptySlot.current = key.char;
+      emptySlot.keyId = key.id;
+      key.used = true;
+
+      renderSlots();
+      renderKeyboard();
+      updateCheckButton();
+    }
+
+    // -------------------------------------------------------------------------
+    // Interactie: Letter terugnemen
+    // -------------------------------------------------------------------------
+    function removeLetterFromSlot(slotIndex) {
+      if (isTransitioning) return;
+
+      const slot = slotStates[slotIndex];
+      if (slot.locked || !slot.current) return;
+
+      // Maak toets weer actief
+      const key = keyboardLetters.find((k) => k.id === slot.keyId);
+      if (key) {
+        key.used = false;
+      }
+
+      slot.current = '';
+      slot.keyId = null;
+
+      renderSlots();
+      renderKeyboard();
+      updateCheckButton();
+    }
+
+    function updateCheckButton() {
+      if (isTransitioning) {
+        checkBtn.disabled = true;
+        return;
+      }
+      // Check-knop pas actief als alle vakjes zijn ingevuld
+      const isComplete = slotStates.every((s) => s.current.length > 0);
+      checkBtn.disabled = !isComplete;
+    }
+
+    // -------------------------------------------------------------------------
+    // Woord Controleren & Animaties
+    // -------------------------------------------------------------------------
+    checkBtn.addEventListener('click', () => {
+      if (isTransitioning) return;
+      isTransitioning = true;
+      checkBtn.disabled = true;
+
+      // Knoppen uitschakelen tijdens de overgangsanimatie
+      wordSlots.querySelectorAll('button').forEach((b) => { b.disabled = true; });
+      letterKeyboard.querySelectorAll('button').forEach((b) => { b.disabled = true; });
+
+      const isCorrect = slotStates.every((s) => s.current === s.expected);
+      const progressItem = answerProgress[currentRound];
+
+      if (isCorrect) {
+        animalPhotoCard.classList.add('matched');
+        // Groen-golf van links naar rechts (cascaderend effect)
+        const slotDoms = [...wordSlots.children];
+        slotDoms.forEach((el, idx) => {
+          setTimeout(() => {
+            el.classList.add('correct-wave');
+          }, idx * 90);
+        });
+
+        score += 1;
+        progressItem.textContent = '😊';
+        progressItem.className = 'correct';
+        progressItem.setAttribute('aria-label', `Ronde ${currentRound + 1}: goed`);
+        feedback.textContent = 'Goed geraden!';
+        feedback.className = 'game-feedback correct';
+
+        // Na 1.9s door naar de volgende ronde (halve seconde langer genieten van de groene animatie)
+        roundTimeoutId = setTimeout(() => {
+          advanceRound();
+        }, 1900);
+      } else {
+        animalPhotoCard.classList.add('mismatch');
+        // Fout: rood schudden (shake animatie)
+        wordRow.classList.add('shake');
+        setTimeout(() => wordRow.classList.remove('shake'), 400);
+
+        progressItem.textContent = '😢';
+        progressItem.className = 'incorrect';
+        progressItem.setAttribute('aria-label', `Ronde ${currentRound + 1}: fout`);
+        feedback.textContent = `Helaas! Het juiste woord was ${targetWord}.`;
+        feedback.className = 'game-feedback incorrect';
+
+        roundTimeoutId = setTimeout(() => {
+          advanceRound();
+        }, 2400);
+      }
+    });
+
+    function advanceRound() {
+      currentRound += 1;
+      if (currentRound < 10) {
+        showRound();
+      } else {
+        isTransitioning = false;
+        // Einde spel: toon resultaten en trofee
+        animalPhotoCard.hidden = true;
+        wordRow.hidden = true;
+        letterKeyboard.hidden = true;
+        feedback.hidden = true;
+
+        const perfect = score === 10;
+        trophy.hidden = !perfect;
+        resultTitle.textContent = perfect ? 'Gefeliciteerd!' : 'Goed gedaan!';
+        scoreText.textContent = `Je hebt ${score} van de 10 dieren goed gespeld.`;
+        gameResult.hidden = false;
+      }
+    }
+  </script>
+</body>
+</html>

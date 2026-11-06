@@ -10,6 +10,22 @@
   --error-light: #f6d1d1;
 }
 
+@font-face {
+  font-family: 'OpenDyslexic';
+  src: url('Data/Tekst-Data/OpenDyslexic/OpenDyslexic-Regular.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'OpenDyslexic';
+  src: url('Data/Tekst-Data/OpenDyslexic/OpenDyslexic-Bold.otf') format('opentype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
 * {
   box-sizing: border-box;
 }
@@ -267,7 +283,7 @@ h1 {
 
 .games-menu {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: repeat(2, 1fr);
   gap: 14px;
 }
 
@@ -293,7 +309,9 @@ h1 {
   margin-left: 5px;
 }
 
-.math-game {
+.math-game,
+.memory-game,
+.animal-game {
   width: min(100% - 48px, 620px);
   min-height: 100vh;
   margin: 0 auto;
@@ -301,18 +319,44 @@ h1 {
   text-align: center;
 }
 
-.table-selection {
+.math-game {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.math-game .game-session {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  flex: 1;
+}
+
+.table-selection,
+.player-selection,
+.animal-selection {
   padding-top: 12vh;
 }
 
-.table-selection h1 {
+.table-selection h1,
+.player-selection h1 {
   margin-bottom: 36px;
   font-size: clamp(3rem, 8vw, 5.5rem);
 }
 
+.animal-game h1 {
+  font-size: clamp(2rem, 5vw, 3.2rem);
+  line-height: 1.15;
+  margin-bottom: 24px;
+}
+
+.animal-selection h1 {
+  font-size: clamp(2.4rem, 6vw, 4rem);
+}
+
 .table-options {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  grid-template-columns: repeat(2, 1fr);
   gap: 12px;
 }
 
@@ -393,6 +437,7 @@ h1 {
   position: relative;
   display: flex;
   justify-content: space-between;
+  width: 100%;
   max-width: 500px;
   margin: 24px auto 0;
   padding: 0;
@@ -534,21 +579,170 @@ h1 {
   gap: 12px;
 }
 
-.memory-game {
-  width: min(100% - 48px, 620px);
-  min-height: 100vh;
+/* ==========================================================================
+   Dieren raden (Spelling & Fotoraadsel)
+   ========================================================================== */
+
+.animal-photo-card {
+  width: 100%;
+  max-width: 240px;
+  aspect-ratio: 3 / 4;
+  height: auto;
+  margin: 0 auto 20px;
+  overflow: hidden;
+  background: var(--soft-white);
+  border: 4px solid var(--soft-white);
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(22, 67, 84, 0.16);
+  transition: border-color 180ms ease, box-shadow 180ms ease;
+}
+
+.animal-photo-card.matched {
+  border-color: var(--success-color);
+  box-shadow: 0 0 0 3px var(--success-light), 0 8px 24px rgba(22, 67, 84, 0.16);
+}
+
+.animal-photo-card.mismatch {
+  border-color: var(--error-color);
+  box-shadow: 0 0 0 3px var(--error-light), 0 8px 24px rgba(22, 67, 84, 0.16);
+}
+
+.animal-photo-card img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: high-quality;
+  transform: translateZ(0);
+}
+
+.word-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin: 0 auto 24px;
+}
+
+.word-slots {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+}
+
+.letter-slot {
+  display: grid;
+  width: 48px;
+  height: 56px;
+  padding: 0;
+  color: var(--deep-blue);
+  font-family: 'OpenDyslexic', Arial, sans-serif;
+  font-size: 1.8rem;
+  font-weight: 700;
+  place-items: center;
+  user-select: none;
+  background: rgba(248, 252, 253, 0.9);
+  border: 2px dashed rgba(22, 67, 84, 0.35);
+  border-radius: 8px;
+  transition: background 180ms ease, border-color 180ms ease, transform 180ms ease;
+}
+
+.letter-slot.filled {
+  cursor: pointer;
+  background: var(--soft-white);
+  border-style: solid;
+  border-color: var(--deep-blue);
+  box-shadow: 0 4px 10px rgba(22, 67, 84, 0.12);
+}
+
+.letter-slot.locked {
+  cursor: default;
+  background: rgba(207, 234, 243, 0.5);
+  border-style: solid;
+  border-color: rgba(22, 67, 84, 0.5);
+}
+
+.letter-slot.correct-wave {
+  color: var(--soft-white);
+  background: var(--success-color);
+  border-color: var(--success-color);
+  transform: scale(1.08);
+}
+
+.check-button {
+  display: grid;
+  width: 54px;
+  height: 56px;
+  color: var(--soft-white);
+  font-size: 1.6rem;
+  font-weight: 700;
+  cursor: pointer;
+  background: var(--deep-blue);
+  border: 0;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(22, 67, 84, 0.2);
+  place-items: center;
+  transition: background 180ms ease, transform 180ms ease;
+}
+
+.check-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+  box-shadow: none;
+}
+
+.check-button:not(:disabled):hover {
+  background: #245e70;
+  transform: translateY(-2px);
+}
+
+.check-button:not(:disabled):active {
+  transform: scale(0.95);
+}
+
+.letter-keyboard {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  max-width: 380px;
+  gap: 8px;
   margin: 0 auto;
-  padding: 12vh 0 64px;
-  text-align: center;
 }
 
-.player-selection {
-  padding-top: 12vh;
+.letter-key {
+  display: grid;
+  height: 52px;
+  padding: 0;
+  color: var(--deep-blue);
+  font-family: 'OpenDyslexic', Arial, sans-serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  cursor: pointer;
+  background: var(--soft-white);
+  border: 2px solid rgba(22, 67, 84, 0.25);
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(22, 67, 84, 0.08);
+  place-items: center;
+  transition: transform 180ms cubic-bezier(0.2, 0.8, 0.2, 1), background 180ms ease, opacity 180ms ease;
 }
 
-.player-selection h1 {
-  margin-bottom: 36px;
-  font-size: clamp(3rem, 8vw, 5.5rem);
+.letter-key:hover:not(:disabled) {
+  background: rgba(248, 252, 253, 1);
+  border-color: var(--deep-blue);
+  transform: translateY(-2px);
+}
+
+.letter-key:disabled {
+  cursor: default;
+  opacity: 0.25;
+  background: rgba(22, 67, 84, 0.06);
+  border-color: transparent;
+  box-shadow: none;
+}
+
+.word-row.shake {
+  animation: shake 300ms ease;
 }
 
 .player-options {
@@ -1060,13 +1254,19 @@ h1 {
     padding-top: 96px;
   }
 
+  .games-menu {
+    grid-template-columns: 1fr;
+  }
+
   .math-game,
-  .memory-game {
+  .memory-game,
+  .animal-game {
     padding-top: 96px;
   }
 
   .table-selection,
   .player-selection,
+  .animal-selection,
   .memory-setup {
     padding-top: 0;
   }

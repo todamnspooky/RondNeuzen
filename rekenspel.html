@@ -48,8 +48,6 @@
 
     <section class="game-session" id="game-session" hidden>
       <p class="eyebrow" id="selected-table-label">Tafels 1 t/m 10</p>
-      <h1>Rekenspel</h1>
-      <p class="game-progress" id="game-progress">Som 1 van 10</p>
 
       <section class="math-question" id="math-question">
         <h2 id="question-text"></h2>
@@ -222,7 +220,7 @@
         button.addEventListener('click', checkAnswer);
         answerOptions.append(button);
       });
-      progress.textContent = `Som ${currentRound + 1} van 10`;
+      if (progress) progress.textContent = `Som ${currentRound + 1} van 10`;
       feedback.className = 'game-feedback';
       feedback.textContent = '';
     }
@@ -277,7 +275,7 @@
       tableSelection.hidden = true;
       gameSession.hidden = false;
       mathQuestion.hidden = false;
-      progress.hidden = false;
+      if (progress) progress.hidden = false;
       feedback.className = 'game-feedback';
       feedback.hidden = false;
       result.hidden = true;
@@ -312,7 +310,7 @@
           showQuestion();
         } else {
           mathQuestion.hidden = true;
-          progress.hidden = true;
+          if (progress) progress.hidden = true;
           feedback.hidden = true;
           const perfectScore = score === 10;
           trophy.hidden = !perfectScore;
