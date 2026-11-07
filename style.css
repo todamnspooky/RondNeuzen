@@ -333,14 +333,17 @@ h1 {
 
 .table-selection,
 .player-selection,
-.animal-selection {
+.animal-selection,
+.memory-setup,
+.math-setup {
   padding-top: 12vh;
 }
 
 .table-selection h1,
 .player-selection h1,
 .animal-selection h1,
-.memory-setup h1 {
+.memory-setup h1,
+.math-setup h1 {
   font-size: clamp(2.4rem, 6vw, 4rem);
   line-height: 1.15;
   margin-bottom: 24px;
@@ -474,7 +477,10 @@ h1 {
   border-color: var(--error-color);
 }
 
-.answer-options {
+.answer-options,
+.answer-options.choices-3,
+.answer-options.choices-6,
+.answer-options.choices-9 {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 12px;
@@ -529,6 +535,116 @@ h1 {
   75% {
     transform: translateX(4px);
   }
+}
+
+.math-input-container {
+  margin: 0 auto;
+}
+
+.math-input-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  margin: 0 auto 20px;
+}
+
+.math-input-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 120px;
+  height: 56px;
+  padding: 0 16px;
+  font-family: 'OpenDyslexic', Arial, sans-serif;
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--deep-blue);
+  background: var(--soft-white);
+  border: 2px solid var(--deep-blue);
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(22, 67, 84, 0.12);
+  transition: background 180ms ease, border-color 180ms ease, transform 180ms ease;
+}
+
+.math-input-box.correct {
+  color: var(--soft-white);
+  background: var(--success-color);
+  border-color: var(--success-color);
+  box-shadow: 0 0 0 2px var(--success-light), 0 4px 10px rgba(23, 107, 69, 0.2);
+}
+
+.math-input-box.incorrect {
+  color: var(--soft-white);
+  background: var(--error-color);
+  border-color: var(--error-color);
+  box-shadow: 0 0 0 2px var(--error-light), 0 4px 10px rgba(162, 55, 55, 0.2);
+  animation: shake 240ms ease-in-out;
+}
+
+.math-cursor {
+  display: inline-block;
+  margin-left: 2px;
+  color: var(--deep-blue);
+  font-weight: 300;
+  animation: cursor-blink 1s step-start infinite;
+}
+
+.math-input-box.correct .math-cursor,
+.math-input-box.incorrect .math-cursor {
+  display: none;
+}
+
+@keyframes cursor-blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+.math-keypad {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  max-width: 240px;
+  gap: 8px;
+  margin: 0 auto;
+}
+
+.math-key {
+  display: grid;
+  place-items: center;
+  height: 48px;
+  padding: 0;
+  color: var(--deep-blue);
+  font-family: 'OpenDyslexic', Arial, sans-serif;
+  font-size: 1.4rem;
+  font-weight: 700;
+  cursor: pointer;
+  background: rgba(248, 252, 253, 0.9);
+  border: 2px solid var(--deep-blue);
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(22, 67, 84, 0.08);
+  transition: background 180ms ease, color 180ms ease, transform 180ms ease;
+}
+
+.math-key:not(:disabled):hover {
+  background: #e2f1f6;
+  transform: translateY(-2px);
+}
+
+.math-key:not(:disabled):active {
+  color: var(--soft-white);
+  background: var(--deep-blue);
+  transform: scale(0.95);
+}
+
+.math-key:disabled {
+  cursor: default;
+  opacity: 0.45;
+}
+
+.math-key-action {
+  font-size: 1.2rem;
+  background: rgba(207, 234, 243, 0.6);
 }
 
 .game-feedback {
@@ -852,15 +968,6 @@ h1 {
 .player-title {
   font-size: 1.35rem;
   font-weight: 700;
-}
-
-.memory-setup {
-  padding-top: 6vh;
-}
-
-.memory-setup h1 {
-  margin-bottom: 32px;
-  font-size: clamp(3rem, 8vw, 5.5rem);
 }
 
 .setup-group {
@@ -1339,7 +1446,8 @@ h1 {
   .table-selection,
   .player-selection,
   .animal-selection,
-  .memory-setup {
+  .memory-setup,
+  .math-setup {
     padding-top: 0;
   }
 

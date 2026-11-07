@@ -27,14 +27,40 @@
   </nav>
 
   <main class="math-game">
-    <section class="table-selection" id="mode-selection">
-      <p class="eyebrow">Kies een onderdeel</p>
+    <section class="memory-setup math-setup" id="mode-selection">
+      <p class="eyebrow">Oefenen of testen</p>
       <h1>Rekenspel</h1>
-      <div class="table-options" aria-label="Kies welk onderdeel je wilt oefenen">
-        <button type="button" data-mode="all">Alles door elkaar</button>
-        <button type="button" data-mode="plus">Plus (+)</button>
-        <button type="button" data-mode="minus">Min (−)</button>
-        <button type="button" data-mode="times">Keer (×)</button>
+
+      <div class="setup-group">
+        <p class="setup-label">Kies hoe je antwoordt</p>
+        <div class="lives-options" id="choice-mode-options" aria-label="Kies hoe je antwoordt">
+          <button type="button" class="selected" data-choice-mode="3" aria-pressed="true">
+            <span class="option-icon" aria-hidden="true">3️⃣</span>
+            <span class="option-title">3 keuzes</span>
+          </button>
+          <button type="button" data-choice-mode="6" aria-pressed="false">
+            <span class="option-icon" aria-hidden="true">6️⃣</span>
+            <span class="option-title">6 keuzes</span>
+          </button>
+          <button type="button" data-choice-mode="9" aria-pressed="false">
+            <span class="option-icon" aria-hidden="true">9️⃣</span>
+            <span class="option-title">9 keuzes</span>
+          </button>
+          <button type="button" data-choice-mode="input" aria-pressed="false">
+            <span class="option-icon" aria-hidden="true">⌨️</span>
+            <span class="option-title">Zelf invullen</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="setup-group">
+        <p class="setup-label">Kies een onderdeel</p>
+        <div class="grid-options" aria-label="Kies een onderdeel">
+          <button type="button" data-mode="plus">Plus (+)</button>
+          <button type="button" data-mode="minus">Min (−)</button>
+          <button type="button" data-mode="times">Keer (×)</button>
+          <button type="button" data-mode="all">Alles door elkaar</button>
+        </div>
       </div>
       <a href="spelletjes.html" class="back-link">Terug</a>
     </section>
@@ -51,7 +77,32 @@
 
       <section class="math-question" id="math-question">
         <h2 id="question-text"></h2>
-        <div class="answer-options" id="answer-options"></div>
+        <div class="answer-options choices-3" id="answer-options"></div>
+
+        <div class="math-input-container" id="math-input-container" hidden>
+          <div class="math-input-row">
+            <div class="math-input-box" id="math-input-box" aria-live="polite">
+              <span class="math-input-value" id="math-input-value"></span>
+              <span class="math-cursor" aria-hidden="true">|</span>
+            </div>
+            <button type="button" class="check-button" id="math-check-btn" aria-label="Controleer antwoord" disabled>➔</button>
+          </div>
+
+          <div class="math-keypad" id="math-keypad" aria-label="Cijfertoetsen">
+            <button type="button" class="math-key" data-key="1">1</button>
+            <button type="button" class="math-key" data-key="2">2</button>
+            <button type="button" class="math-key" data-key="3">3</button>
+            <button type="button" class="math-key" data-key="4">4</button>
+            <button type="button" class="math-key" data-key="5">5</button>
+            <button type="button" class="math-key" data-key="6">6</button>
+            <button type="button" class="math-key" data-key="7">7</button>
+            <button type="button" class="math-key" data-key="8">8</button>
+            <button type="button" class="math-key" data-key="9">9</button>
+            <button type="button" class="math-key math-key-action" data-key="clear" aria-label="Wis alles">C</button>
+            <button type="button" class="math-key" data-key="0">0</button>
+            <button type="button" class="math-key math-key-action" data-key="backspace" aria-label="Wis cijfer">⌫</button>
+          </div>
+        </div>
       </section>
 
       <ol class="answer-progress" id="answer-progress" aria-label="Voortgang van de antwoorden">
@@ -90,6 +141,30 @@
       throw new Error('Ongeldige sommenbank: controleer Data/Games-Data/Rekenspel/Sommen-Data.js.');
     }
 
+    const MODES_CONFIG = {
+      3: {
+        totalChoices: 3,
+        neededFakes: 2,
+        marginFactor: 0.20,
+        minPoolSize: 5
+      },
+      6: {
+        totalChoices: 6,
+        neededFakes: 5,
+        marginFactor: 0.35,
+        minPoolSize: 9
+      },
+      9: {
+        totalChoices: 9,
+        neededFakes: 8,
+        marginFactor: 0.50,
+        minPoolSize: 14
+      },
+      input: {
+        type: 'input'
+      }
+    };
+
     const toSumObjects = (bank) => bank.map((text) => ({
       text,
       answer: text.split(' = ')[1]
@@ -102,7 +177,6 @@
     const questionText = document.querySelector('#question-text');
     const answerOptions = document.querySelector('#answer-options');
     const answerProgress = [...document.querySelectorAll('#answer-progress li')];
-    const progress = document.querySelector('#game-progress');
     const feedback = document.querySelector('#game-feedback');
     const result = document.querySelector('#game-result');
     const trophy = document.querySelector('#trophy');
@@ -119,6 +193,13 @@
     const selectedTableLabel = document.querySelector('#selected-table-label');
     const mathQuestion = document.querySelector('#math-question');
     const modeButtons = [...document.querySelectorAll('[data-mode]')];
+    const choiceModeButtons = [...document.querySelectorAll('[data-choice-mode]')];
+
+    const mathInputContainer = document.querySelector('#math-input-container');
+    const mathInputBox = document.querySelector('#math-input-box');
+    const mathInputValue = document.querySelector('#math-input-value');
+    const mathCheckBtn = document.querySelector('#math-check-btn');
+    const mathKeypad = document.querySelector('#math-keypad');
 
     let currentRound = 0;
     let score = 0;
@@ -127,6 +208,9 @@
     let gameSums = [];
     let selectedMode = 'times';
     let selectedLevel = 'all';
+    let selectedChoiceMode = '3';
+    let currentInput = '';
+    let isTransitioning = false;
     let roundTimeoutId = null;
 
     function shuffle(items) {
@@ -138,6 +222,28 @@
       }
 
       return shuffled;
+    }
+
+    function generateChoices(target, config) {
+      const margin = Math.max(Math.ceil(target * config.marginFactor), 1);
+      let min = Math.max(0, target - margin);
+      let max = target + margin;
+
+      if ((max - min) < config.minPoolSize) {
+        min = 0;
+        max = Math.max(max, min + config.minPoolSize);
+      }
+
+      const pool = [];
+      for (let num = min; num <= max; num += 1) {
+        if (num !== target) {
+          pool.push(num);
+        }
+      }
+
+      const shuffledPool = shuffle(pool);
+      const fakeAnswers = shuffledPool.slice(0, config.neededFakes);
+      return shuffle([target, ...fakeAnswers]);
     }
 
     function getSessionLabel(mode, level) {
@@ -197,11 +303,9 @@
     }
 
     function showQuestion() {
+      isTransitioning = false;
       currentSum = gameSums[currentRound];
-      const otherAnswers = [...new Set(selectedSums
-        .filter((sum) => sum !== currentSum && sum.answer !== currentSum.answer)
-        .map((sum) => sum.answer))];
-      const answers = shuffle([currentSum.answer, ...shuffle(otherAnswers).slice(0, 2)]);
+      const target = Number(currentSum.answer);
 
       let question = currentSum.text.replace(/ = \d+$/, ' = ?');
       if (currentSum.text.includes(' + ')) {
@@ -211,22 +315,51 @@
       }
 
       questionText.textContent = question;
-      answerOptions.replaceChildren();
-      answers.forEach((answer) => {
-        const button = document.createElement('button');
-        button.type = 'button';
-        button.dataset.answer = answer;
-        button.textContent = answer;
-        button.addEventListener('click', checkAnswer);
-        answerOptions.append(button);
-      });
-      if (progress) progress.textContent = `Som ${currentRound + 1} van 10`;
       feedback.className = 'game-feedback';
       feedback.textContent = '';
+
+      if (selectedChoiceMode === 'input') {
+        if (answerOptions) {
+          answerOptions.hidden = true;
+          answerOptions.replaceChildren();
+        }
+        if (mathInputContainer) {
+          mathInputContainer.hidden = false;
+        }
+        currentInput = '';
+        if (mathInputValue) mathInputValue.textContent = '';
+        if (mathInputBox) mathInputBox.className = 'math-input-box';
+        if (mathCheckBtn) mathCheckBtn.disabled = true;
+        if (mathKeypad) {
+          mathKeypad.querySelectorAll('button').forEach((btn) => {
+            btn.disabled = false;
+          });
+        }
+      } else {
+        if (mathInputContainer) mathInputContainer.hidden = true;
+        if (answerOptions) {
+          answerOptions.hidden = false;
+          answerOptions.className = `answer-options choices-${selectedChoiceMode}`;
+          answerOptions.replaceChildren();
+
+          const cfg = MODES_CONFIG[selectedChoiceMode] || MODES_CONFIG['3'];
+          const choices = generateChoices(target, cfg);
+
+          choices.forEach((answer) => {
+            const button = document.createElement('button');
+            button.type = 'button';
+            button.dataset.answer = String(answer);
+            button.textContent = String(answer);
+            button.addEventListener('click', () => checkAnswer(String(answer), button));
+            answerOptions.append(button);
+          });
+        }
+      }
     }
 
     function startGame(level) {
       clearTimeout(roundTimeoutId);
+      isTransitioning = false;
       selectedLevel = level;
 
       if (selectedMode === 'times') {
@@ -275,7 +408,6 @@
       tableSelection.hidden = true;
       gameSession.hidden = false;
       mathQuestion.hidden = false;
-      if (progress) progress.hidden = false;
       feedback.className = 'game-feedback';
       feedback.hidden = false;
       result.hidden = true;
@@ -284,21 +416,38 @@
       showQuestion();
     }
 
-    function checkAnswer(event) {
-      const chosenButton = event.currentTarget;
-      const isCorrect = chosenButton.dataset.answer === currentSum.answer;
+    function checkAnswer(submittedAnswer, chosenButton) {
+      if (isTransitioning) return;
+      isTransitioning = true;
+
+      const isCorrect = Number(submittedAnswer) === Number(currentSum.answer);
       const progressItem = answerProgress[currentRound];
-      answerOptions.querySelectorAll('button').forEach((button) => {
-        button.disabled = true;
-        if (button.dataset.answer === currentSum.answer) {
-          button.classList.add('correct');
-        } else if (button === chosenButton && !isCorrect) {
-          button.classList.add('incorrect');
+
+      if (selectedChoiceMode === 'input') {
+        if (mathCheckBtn) mathCheckBtn.disabled = true;
+        if (mathKeypad) {
+          mathKeypad.querySelectorAll('button').forEach((b) => { b.disabled = true; });
         }
-      });
-      progressItem.textContent = isCorrect ? '😊' : '😢';
-      progressItem.className = isCorrect ? 'correct' : 'incorrect';
-      progressItem.setAttribute('aria-label', isCorrect ? `Ronde ${currentRound + 1}: goed` : `Ronde ${currentRound + 1}: fout`);
+        if (mathInputBox) {
+          mathInputBox.classList.add(isCorrect ? 'correct' : 'incorrect');
+        }
+      } else if (answerOptions) {
+        answerOptions.querySelectorAll('button').forEach((button) => {
+          button.disabled = true;
+          if (String(button.dataset.answer) === String(currentSum.answer)) {
+            button.classList.add('correct');
+          } else if (button === chosenButton && !isCorrect) {
+            button.classList.add('incorrect');
+          }
+        });
+      }
+
+      if (progressItem) {
+        progressItem.textContent = isCorrect ? '😊' : '😢';
+        progressItem.className = isCorrect ? 'correct' : 'incorrect';
+        progressItem.setAttribute('aria-label', isCorrect ? `Ronde ${currentRound + 1}: goed` : `Ronde ${currentRound + 1}: fout`);
+      }
+
       feedback.textContent = isCorrect ? 'Goed gedaan!' : `Bijna! Het goede antwoord is ${currentSum.answer}.`;
       feedback.className = `game-feedback ${isCorrect ? 'correct' : 'incorrect'}`;
       score += isCorrect ? 1 : 0;
@@ -310,16 +459,97 @@
           showQuestion();
         } else {
           mathQuestion.hidden = true;
-          if (progress) progress.hidden = true;
           feedback.hidden = true;
+          if (mathInputContainer) mathInputContainer.hidden = true;
           const perfectScore = score === 10;
           trophy.hidden = !perfectScore;
           resultTitle.textContent = perfectScore ? 'Gefeliciteerd!' : 'Goed gedaan!';
           scoreText.textContent = `Je hebt ${score} van de 10 sommen goed.`;
           result.hidden = false;
         }
+        isTransitioning = false;
       }, delay);
     }
+
+    function handleKeypadInput(digit) {
+      if (isTransitioning || selectedChoiceMode !== 'input') return;
+      if (currentInput.length < 5) {
+        currentInput = currentInput === '0' ? digit : currentInput + digit;
+        if (mathInputValue) mathInputValue.textContent = currentInput;
+        if (mathCheckBtn) mathCheckBtn.disabled = currentInput.length === 0;
+      }
+    }
+
+    function handleKeypadBackspace() {
+      if (isTransitioning || selectedChoiceMode !== 'input') return;
+      currentInput = currentInput.slice(0, -1);
+      if (mathInputValue) mathInputValue.textContent = currentInput;
+      if (mathCheckBtn) mathCheckBtn.disabled = currentInput.length === 0;
+    }
+
+    function handleKeypadClear() {
+      if (isTransitioning || selectedChoiceMode !== 'input') return;
+      currentInput = '';
+      if (mathInputValue) mathInputValue.textContent = '';
+      if (mathCheckBtn) mathCheckBtn.disabled = true;
+    }
+
+    if (mathKeypad) {
+      mathKeypad.querySelectorAll('button').forEach((button) => {
+        button.addEventListener('click', () => {
+          const key = button.dataset.key;
+          if (key === 'backspace') {
+            handleKeypadBackspace();
+          } else if (key === 'clear') {
+            handleKeypadClear();
+          } else if (key) {
+            handleKeypadInput(key);
+          }
+        });
+      });
+    }
+
+    if (mathInputBox) {
+      mathInputBox.addEventListener('click', () => {
+        handleKeypadBackspace();
+      });
+    }
+
+    if (mathCheckBtn) {
+      mathCheckBtn.addEventListener('click', () => {
+        if (!mathCheckBtn.disabled && currentInput.length > 0) {
+          checkAnswer(currentInput);
+        }
+      });
+    }
+
+    if (typeof window !== 'undefined') {
+      window.addEventListener('keydown', (event) => {
+        if (gameSession.hidden || selectedChoiceMode !== 'input' || isTransitioning) return;
+        if (event.key >= '0' && event.key <= '9') {
+          event.preventDefault();
+          handleKeypadInput(event.key);
+        } else if (event.key === 'Backspace') {
+          event.preventDefault();
+          handleKeypadBackspace();
+        } else if (event.key === 'Enter') {
+          event.preventDefault();
+          if (currentInput.length > 0) {
+            checkAnswer(currentInput);
+          }
+        }
+      });
+    }
+
+    choiceModeButtons.forEach((button) => {
+      button.addEventListener('click', () => {
+        choiceModeButtons.forEach((btn) => {
+          btn.classList.toggle('selected', btn === button);
+          btn.setAttribute('aria-pressed', btn === button ? 'true' : 'false');
+        });
+        selectedChoiceMode = button.dataset.choiceMode;
+      });
+    });
 
     modeButtons.forEach((button) => {
       button.addEventListener('click', () => openLevelSelection(button.dataset.mode));
@@ -336,6 +566,7 @@
 
     chooseTableButton.addEventListener('click', () => {
       clearTimeout(roundTimeoutId);
+      isTransitioning = false;
       gameSession.hidden = true;
       tableSelection.hidden = true;
       modeSelection.hidden = false;
